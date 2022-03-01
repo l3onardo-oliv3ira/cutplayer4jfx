@@ -2,6 +2,8 @@ package com.github.cutplayer4j;
 
 import java.awt.image.BufferedImage;
 
+import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
+
 public interface IMediaPlayer {
 
   void mute();
@@ -20,17 +22,20 @@ public interface IMediaPlayer {
 
   boolean isPlaying();
   
-  int volume();
+  double volume();
 
-  void setVolume(int volume);
+  void setVolume(double volume);
   
   BufferedImage snapshots();
 
-  void setPosition(float f);
+  void setPosition(long position);
 
-  float position();
-
+  long position();
+  
   void toggleFullScreen();
 
+  void attachListener(IMediaPlayerEventListener listener);
+
+  long duration();
 }
 

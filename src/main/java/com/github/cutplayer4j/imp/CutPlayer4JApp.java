@@ -21,6 +21,5 @@ public class CutPlayer4JApp {
   private void start() {
     ICutPlayer4JWindow window = new CutPlayer4JWindow();
     window.display();
-    System.out.println("ACABOU");
   }
 }

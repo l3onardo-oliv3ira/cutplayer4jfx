@@ -5,9 +5,9 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 
 import com.github.cutplayer4j.IMediaPlayer;
-import com.github.cutplayer4j.gui.IMediaPlayerProvider;
+import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 
-public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerProvider {
+public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerViewer {
 
   private static final String IDLE = "idle";
 
@@ -22,14 +22,15 @@ public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerProv
     setLayout(cardLayout);
     add(new ImagePane(ImagePane.Mode.CENTER, getClass().getResource("/cutplayer-black.png"), 0.3f), IDLE);
     add(player, ACTIVE);
-    showIdle();
   }
 
+  @Override
   public void showIdle() {
     cardLayout.show(this, IDLE);
   }
   
-  public void showActive() {
+  @Override
+  public void showVideo() {
     cardLayout.show(this, ACTIVE);
   }
 

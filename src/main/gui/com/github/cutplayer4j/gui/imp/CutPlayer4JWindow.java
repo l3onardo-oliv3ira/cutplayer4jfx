@@ -1,12 +1,15 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
+import static com.github.cutplayer4j.imp.CutPlayer4J.resources;
 import static com.github.cutplayer4j.view.action.Resource.resource;
+import static com.github.utils4j.imp.SwingTools.invokeLater;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,12 +26,19 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.github.cutplayer4j.IMediaPlayer;
+import com.github.cutplayer4j.event.PausedEvent;
+import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.StoppedEvent;
+import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
+import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
+import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.Images;
 import com.github.cutplayer4j.view.ShutdownAwareFrame;
 import com.github.cutplayer4j.view.action.StandardAction;
@@ -44,10 +54,10 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   
   private final Action mediaOpenAction;
   
-  //-----
   private final Action mediaQuitAction;
 
   private final StandardAction videoFullscreenAction;
+  
   private final StandardAction videoAlwaysOnTopAction;
 
   private final StandardAction viewStatusBarAction;
@@ -57,9 +67,11 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   private final JMenuBar menuBar;
 
   private final JMenu mediaMenu;
+  
   private final JMenu mediaRecentMenu;
 
   private final JMenu playbackMenu;
+  
   private final JMenu playbackSpeedMenu;
 
   private final JMenu audioMenu;
@@ -78,20 +90,16 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
 
   private final JPanel bottomPane;
   
-  private final JPanel cutPane;
+  //private final JPanel cutPane;
   
-// -----
-
-  private JPanel mediaPlayerPanel;
+  private IMediaPlayerViewer mediaPlayerPanel;
   
   private IMediaPlayer mediaPlayer;
   
   public CutPlayer4JWindow() {
     super("CutPlayer4J", Images.CUTPLAYER.asImage());
     
-    mediaPlayerPanel = application().mediaPlayerPanel();
-        
-    mediaPlayer = application().mediaPlayer();
+    mediaPlayer = (mediaPlayerPanel = application().mediaPlayerPanel()).mediaPlayer();
     
     mediaOpenAction = new StandardAction(resource("menu.media.item.openFile")) {
       @Override
@@ -100,7 +108,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
           File file = fileChooser.getSelectedFile();
           String mrl = file.getAbsolutePath();
           application().addRecentMedia(mrl);
-          mediaPlayer.play(mrl);
+          mediaPlayer.play(file.toURI().toString());
         }
       }
     };
@@ -166,6 +174,80 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
         dialog.setVisible(true);
       }
     };
+    
+    mediaPlayer.attachListener(new IMediaPlayerEventListener() {
+
+      @Override
+      public void playing() {
+        invokeLater(() -> {
+          positionPane.setMaximum(mediaPlayer.duration());
+          mediaPlayerPanel.showVideo();
+          application().post(PlayingEvent.INSTANCE);
+        });
+      }
+
+      @Override
+      public void paused() {
+        invokeLater(() -> {
+          application().post(PausedEvent.INSTANCE);
+        });
+      }
+
+      @Override
+      public void stopped() {
+        invokeLater(() -> {
+          mediaPlayerPanel.showIdle();
+          application().post(StoppedEvent.INSTANCE);
+        });
+      }
+
+      @Override
+      public void finished() {
+        invokeLater(() -> {
+          mediaPlayerPanel.showIdle();
+          application().post(StoppedEvent.INSTANCE);
+        });
+      }
+
+      @Override
+      public void error() {
+        invokeLater(() ->  {
+          mediaPlayerPanel.showIdle();
+          application().post(StoppedEvent.INSTANCE);
+          File selectedFile = fileChooser.getSelectedFile(); 
+          JOptionPane.showMessageDialog(
+            CutPlayer4JWindow.this, 
+            MessageFormat.format(
+              resources().getString("error.errorEncountered"), selectedFile != null ? selectedFile.getAbsolutePath() : ""), 
+              resources().getString("dialog.errorEncountered"), 
+              JOptionPane.ERROR_MESSAGE
+            );
+        });
+      }
+
+      @Override
+      public void lengthChanged(long newLength) {
+        invokeLater(() -> {
+          positionPane.setDuration(newLength);
+          statusBar.setDuration(newLength);
+        });
+      }
+
+      @Override
+      public void timeChanged(long newTime) {
+        invokeLater(() -> {
+          positionPane.setTime(newTime);
+          statusBar.setTime(newTime);
+        });
+      }
+
+      @Override
+      public void mediaPlayerReady() {
+        invokeLater(() -> {
+          positionPane.setMaximum(mediaPlayer.duration());
+        });
+      }
+    });
 
     menuBar = new JMenuBar();
 
@@ -196,7 +278,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     }
     playbackMenu.add(new JSeparator());
     for (Action action : mpa.playbackControlActions()) {
-      playbackMenu.add(new JMenuItem(action) { // FIXME need a standardmenuitem that disables the tooltip like this, very poor show...
+      playbackMenu.add(new JMenuItem(action) { 
         @Override
         public String getToolTipText() {
           return null;
@@ -237,7 +319,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
 
     JPanel contentPane = new JPanel();
     contentPane.setLayout(new BorderLayout());
-    contentPane.add(mediaPlayerPanel, BorderLayout.CENTER);
+    contentPane.add((JPanel)mediaPlayerPanel, BorderLayout.CENTER);
     contentPane.setTransferHandler(new MediaTransferHandler() {
       @Override
       protected void onMediaDropped(String[] uris) {
@@ -261,7 +343,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     statusBar = new StatusBar();
     bottomPane.add(statusBar, BorderLayout.SOUTH);
     
-    
+    /*
     JPanel rightPane = new JPanel();
     rightPane.setLayout(new BorderLayout());
     rightPane.add(new JButton("SALVAR TODOS OS CORTES"), BorderLayout.SOUTH);
@@ -287,6 +369,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     
     rightPane.add(scrollPane, BorderLayout.CENTER);
     contentPane.add(rightPane, BorderLayout.EAST);
+    */
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
     setContentPane(contentPane);

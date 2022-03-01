@@ -12,7 +12,6 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.view.StandardLabel;
 import com.google.common.eventbus.Subscribe;
@@ -36,10 +35,10 @@ final class PositionPane extends JPanel {
   PositionPane() {
     timeLabel = new StandardLabel("9:99:99");
 
-    UIManager.put("Slider.paintValue", false); // FIXME how to do this for a single component?
+    UIManager.put("Slider.paintValue", false);
     positionSlider = new JSlider();
     positionSlider.setMinimum(0);
-    positionSlider.setMaximum(1000);
+    positionSlider.setMaximum(Integer.MAX_VALUE);
     positionSlider.setValue(0);
 
     positionSlider.addChangeListener(new ChangeListener() {
@@ -53,7 +52,7 @@ final class PositionPane extends JPanel {
           else {
             sliderChanging.set(false);
           }
-          application().mediaPlayer().setPosition(source.getValue() / 1000.0f);
+          application().mediaPlayer().setPosition(source.getValue());
         }
       }
     });
@@ -76,11 +75,15 @@ final class PositionPane extends JPanel {
     timeLabel.setText(formatTime(time));
 
     if (!sliderChanging.get()) {
-      int value = (int) (application().mediaPlayer().position() * 1000.0f);
+      int value = (int) (application().mediaPlayer().position());
       positionChanging.set(true);
       positionSlider.setValue(value);
       positionChanging.set(false);
     }
+  }
+  
+  void setMaximum(long maximum) {
+    this.positionSlider.setMaximum(maximum >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)maximum);
   }
 
   void setTime(long time) {
@@ -93,6 +96,8 @@ final class PositionPane extends JPanel {
 
   @Subscribe
   public void onTick(TickEvent tick) {
+    setTime(application().mediaPlayer().position());
+    setDuration(application().mediaPlayer().duration());
     refresh();
   }
 }

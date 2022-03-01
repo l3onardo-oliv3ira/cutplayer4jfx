@@ -66,6 +66,7 @@ final class StatusBar extends JPanel {
 
   @Subscribe
   public void onTick(TickEvent tick) {
+    setTime(application().mediaPlayer().position());
     refresh();
   }
 }

@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import com.github.cutplayer4j.ICutPlayer4J;
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.TickEvent;
+import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.gui.imp.EmbeddedMediaPanel;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.google.common.eventbus.EventBus;
@@ -65,7 +66,7 @@ public class CutPlayer4J implements ICutPlayer4J {
     invokeLater(() -> eventBus.post(event));
   }
 
-  public JPanel mediaPlayerPanel() {
+  public IMediaPlayerViewer mediaPlayerPanel() {
     return mediaPlayerPanel;
   }
   
