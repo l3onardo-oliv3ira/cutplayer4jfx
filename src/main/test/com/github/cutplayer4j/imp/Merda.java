@@ -2,15 +2,12 @@ package com.github.cutplayer4j.imp;
 
 import java.io.File;
 
-import javax.script.Bindings;
-
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
 

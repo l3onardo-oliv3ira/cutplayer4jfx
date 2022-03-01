@@ -12,8 +12,10 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.github.cutplayer4j.event.FinishedEvent;
+import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.StoppedEvent;
 import com.github.cutplayer4j.event.TickEvent;
-import com.github.cutplayer4j.view.StandardLabel;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -67,7 +69,7 @@ final class PositionPane extends JPanel {
 
     timeLabel.setText("-:--:--");
     durationLabel.setText("-:--:--");
-
+    
     application().subscribe(this);
   }
 
@@ -82,22 +84,29 @@ final class PositionPane extends JPanel {
     }
   }
   
-  void setMaximum(long maximum) {
-    this.positionSlider.setMaximum(maximum >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)maximum);
-  }
-
   void setTime(long time) {
     this.time = time;
   }
-
+  
   void setDuration(long duration) {
     durationLabel.setText(formatTime(duration));
+    positionSlider.setMaximum((int)duration);
   }
 
   @Subscribe
   public void onTick(TickEvent tick) {
     setTime(application().mediaPlayer().position());
-    setDuration(application().mediaPlayer().duration());
     refresh();
+  }
+  
+  @Subscribe
+  public void onPlaying(PlayingEvent e) {
+    setDuration(application().mediaPlayer().duration());
+  }
+  
+  @Subscribe
+  public void onFinished(FinishedEvent e) {
+    application().mediaPlayer().setPosition(0);
+    application().mediaPlayer().stop();
   }
 }

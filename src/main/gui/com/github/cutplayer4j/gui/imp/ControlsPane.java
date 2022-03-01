@@ -11,11 +11,9 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.PausedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.StoppedEvent;
-import com.github.cutplayer4j.view.BasePanel;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.google.common.eventbus.Subscribe;
 

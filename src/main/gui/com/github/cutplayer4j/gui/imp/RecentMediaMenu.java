@@ -4,6 +4,7 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.view.action.Resource.resource;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -12,7 +13,6 @@ import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import com.github.cutplayer4j.view.OnDemandMenu;
 import com.github.cutplayer4j.view.action.Resource;
 import com.github.cutplayer4j.view.action.StandardAction;
 
@@ -43,14 +43,11 @@ final class RecentMediaMenu extends OnDemandMenu {
       super(String.format("%d: %s", number, mrl));
       putValue(Action.MNEMONIC_KEY, number < 10 ? number : 0);
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(String.format("control %d", number < 10 ? number : 0)));
-      this.mrl = mrl;
+      this.mrl = new File(mrl).toURI().toString();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      // FIXME something odd going on when using renderer (e.g. chromecast), if you play again while it's already casting you get an error callback
-      //     and this thread actually seems to die if you invoke stop first, i.e. single step the stop call and it executes but never returns
-      //     but if you press the stop button first, it seems ok...
       application().mediaPlayer().play(mrl);
     }
   }

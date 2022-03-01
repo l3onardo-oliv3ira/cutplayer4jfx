@@ -1,4 +1,4 @@
-package com.github.cutplayer4j.view;
+package com.github.cutplayer4j.gui.imp;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;

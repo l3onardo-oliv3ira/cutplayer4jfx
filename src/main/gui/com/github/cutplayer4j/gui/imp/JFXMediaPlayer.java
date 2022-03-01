@@ -1,10 +1,16 @@
 package com.github.cutplayer4j.gui.imp;
 
+import static com.github.utils4j.imp.Throwables.tryRuntime;
+
 import java.awt.image.BufferedImage;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
 
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -22,11 +28,11 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
 
   public JFXMediaPlayer() {
   }
-  
+
   private boolean isAlive() {
     return player != null;
   }
-  
+
   @Override
   public void mute() {
     if (isAlive()) {
@@ -74,16 +80,32 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   public BufferedImage snapshots() {
     if (!isAlive())
       return null;
-    final Media media = player.getMedia();
-    int width = media.getWidth();
-    int height = media.getHeight();
-    WritableImage image = new WritableImage(width, height);
-    MediaView mediaView = new MediaView();
-    mediaView.setFitWidth(width);
-    mediaView.setFitHeight(height);
-    mediaView.setMediaPlayer(player);
-    mediaView.snapshot(null, image);
-    return SwingFXUtils.fromFXImage(image, null);
+    AtomicReference<BufferedImage> out = new AtomicReference<>();
+    runAndWait(() -> {
+      final Media media = player.getMedia();
+      int width = media.getWidth();
+      int height = media.getHeight();
+      WritableImage image = new WritableImage(width, height);
+      MediaView mediaView = new MediaView();
+      mediaView.setFitWidth(width);
+      mediaView.setFitHeight(height);
+      mediaView.setMediaPlayer(player);
+      mediaView.snapshot(null, image);
+      out.set(SwingFXUtils.fromFXImage(image, null));
+    });
+    return out.get();
+  }
+
+  private static void runAndWait(Runnable runnable) {
+    tryRuntime(() -> {
+      if (Platform.isFxApplicationThread()) {
+        runnable.run();
+      } else {
+        FutureTask<Object> futureTask = new FutureTask<>(runnable, null);
+        Platform.runLater(futureTask);
+        futureTask.get();
+      }
+    });
   }
 
   @Override
@@ -113,8 +135,11 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       player.stop();
       player.dispose();
     }
-    player = new MediaPlayer(new Media(uri));
+    Media media = new Media(uri);
+    player = new MediaPlayer(media);
     MediaView mediaView = new MediaView(player);
+    mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+    mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
     mediaView.setPreserveRatio(true);
     StackPane root = new StackPane();
     root.getChildren().add(mediaView);
@@ -138,7 +163,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       return 0;
     return (long)player.getCurrentTime().toMillis();
   }
-  
+
   @Override
   public long duration() {
     if (!isAlive())
@@ -163,7 +188,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
     player.setOnPaused(listener::paused);
     player.setOnStopped(listener::stopped);
     player.setOnPlaying(listener::playing);
-    player.setOnReady(listener::mediaPlayerReady);
+    player.setOnReady(listener::ready);
     player.setOnError(listener::error);
     player.setOnEndOfMedia(listener::finished);
   }

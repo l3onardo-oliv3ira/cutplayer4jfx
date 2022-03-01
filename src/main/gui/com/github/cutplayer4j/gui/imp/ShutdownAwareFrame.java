@@ -1,4 +1,4 @@
-package com.github.cutplayer4j.view;
+package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 
@@ -15,6 +15,12 @@ public abstract class ShutdownAwareFrame extends SimpleFrame {
   public ShutdownAwareFrame(String title, Image icon) {
     super(title, icon);
     application().subscribe(this);
+    addWindowListener(new java.awt.event.WindowAdapter() {
+      @Override
+      public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+        application().post(ShutdownEvent.INSTANCE);
+      }
+    });
   }
 
   @Override

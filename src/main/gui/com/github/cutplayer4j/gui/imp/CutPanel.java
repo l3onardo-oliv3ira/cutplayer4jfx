@@ -5,8 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import com.github.cutplayer4j.view.BasePanel;
-
 import net.miginfocom.swing.MigLayout;
 
 public class CutPanel extends BasePanel {
@@ -26,7 +24,6 @@ public class CutPanel extends BasePanel {
   private final JLabel startTime;
 
   private final JLabel endTime;
-
 
   private final JButton playPauseButton;
 

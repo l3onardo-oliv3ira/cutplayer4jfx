@@ -6,8 +6,8 @@ import static com.github.cutplayer4j.time.Time.formatTime;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
-import com.github.cutplayer4j.view.BorderedStandardLabel;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -68,5 +68,10 @@ final class StatusBar extends JPanel {
   public void onTick(TickEvent tick) {
     setTime(application().mediaPlayer().position());
     refresh();
+  }
+  
+  @Subscribe
+  public void onPlaying(PlayingEvent e) {
+    setDuration(application().mediaPlayer().duration());
   }
 }

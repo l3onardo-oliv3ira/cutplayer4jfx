@@ -1,10 +1,9 @@
 package com.github.cutplayer4j.view.action.mediaplayer;
 
-import java.awt.event.ActionEvent;
-
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 
-import com.github.cutplayer4j.IMediaPlayer;
+import java.awt.event.ActionEvent;
+
 import com.github.cutplayer4j.view.action.Resource;
 
 @SuppressWarnings("serial")

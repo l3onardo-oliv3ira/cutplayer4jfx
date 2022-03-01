@@ -11,8 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JPanel;
-
 import com.github.cutplayer4j.ICutPlayer4J;
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.TickEvent;
@@ -60,6 +58,10 @@ public class CutPlayer4J implements ICutPlayer4J {
 
   public void subscribe(Object subscriber) {
     eventBus.register(subscriber);
+  }
+  
+  public void unsubscribe(Object subscriber) {
+    eventBus.unregister(subscriber);
   }
 
   public void post(Object event) {

@@ -20,7 +20,7 @@ public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerView
   public EmbeddedMediaPanel() {
     cardLayout = new CardLayout();
     setLayout(cardLayout);
-    add(new ImagePane(ImagePane.Mode.CENTER, getClass().getResource("/cutplayer-black.png"), 0.3f), IDLE);
+    add(new ImagePane(ImagePane.Mode.CENTER, getClass().getResource(Images.CUTPLAYER_BLACK.path()), 0.3f), IDLE);
     add(player, ACTIVE);
   }
 

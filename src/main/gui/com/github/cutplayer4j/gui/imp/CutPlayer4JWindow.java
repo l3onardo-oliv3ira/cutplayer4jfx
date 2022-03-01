@@ -18,6 +18,7 @@ import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -32,15 +33,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.github.cutplayer4j.IMediaPlayer;
+import com.github.cutplayer4j.event.FinishedEvent;
 import com.github.cutplayer4j.event.PausedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.ReadyEvent;
 import com.github.cutplayer4j.event.StoppedEvent;
-import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
-import com.github.cutplayer4j.view.Images;
-import com.github.cutplayer4j.view.ShutdownAwareFrame;
 import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 
@@ -90,14 +90,14 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
 
   private final JPanel bottomPane;
   
-  //private final JPanel cutPane;
+  private final JPanel cutPane;
   
   private IMediaPlayerViewer mediaPlayerPanel;
   
   private IMediaPlayer mediaPlayer;
   
   public CutPlayer4JWindow() {
-    super("CutPlayer4J", Images.CUTPLAYER.asImage());
+    super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
     
     mediaPlayer = (mediaPlayerPanel = application().mediaPlayerPanel()).mediaPlayer();
     
@@ -180,7 +180,6 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       @Override
       public void playing() {
         invokeLater(() -> {
-          positionPane.setMaximum(mediaPlayer.duration());
           mediaPlayerPanel.showVideo();
           application().post(PlayingEvent.INSTANCE);
         });
@@ -204,8 +203,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       @Override
       public void finished() {
         invokeLater(() -> {
-          mediaPlayerPanel.showIdle();
-          application().post(StoppedEvent.INSTANCE);
+          application().post(FinishedEvent.INSTANCE);
         });
       }
 
@@ -226,25 +224,9 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       }
 
       @Override
-      public void lengthChanged(long newLength) {
+      public void ready() {
         invokeLater(() -> {
-          positionPane.setDuration(newLength);
-          statusBar.setDuration(newLength);
-        });
-      }
-
-      @Override
-      public void timeChanged(long newTime) {
-        invokeLater(() -> {
-          positionPane.setTime(newTime);
-          statusBar.setTime(newTime);
-        });
-      }
-
-      @Override
-      public void mediaPlayerReady() {
-        invokeLater(() -> {
-          positionPane.setMaximum(mediaPlayer.duration());
+          application().post(ReadyEvent.INSTANCE);
         });
       }
     });
@@ -319,7 +301,21 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
 
     JPanel contentPane = new JPanel();
     contentPane.setLayout(new BorderLayout());
-    contentPane.add((JPanel)mediaPlayerPanel, BorderLayout.CENTER);
+    
+    JPanel playerPane = new JPanel(new BorderLayout());
+    playerPane.add((JPanel)mediaPlayerPanel, BorderLayout.CENTER);
+
+    JPanel bottomControlsPane = new JPanel();
+    bottomControlsPane.setLayout(new MigLayout("fill, insets 0 n n n", "[grow]", "[]0[]"));
+
+    positionPane = new PositionPane();
+    bottomControlsPane.add(positionPane, "grow, wrap");
+    controlsPane = new ControlsPane(mpa);
+    bottomControlsPane.add(controlsPane, "grow");
+    playerPane.add(bottomControlsPane, BorderLayout.SOUTH);
+    
+    contentPane.add(playerPane, BorderLayout.CENTER);
+    
     contentPane.setTransferHandler(new MediaTransferHandler() {
       @Override
       protected void onMediaDropped(String[] uris) {
@@ -330,23 +326,13 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     bottomPane = new JPanel();
     bottomPane.setLayout(new BorderLayout());
 
-    JPanel bottomControlsPane = new JPanel();
-    bottomControlsPane.setLayout(new MigLayout("fill, insets 0 n n n", "[grow]", "[]0[]"));
-
-    positionPane = new PositionPane();
-    bottomControlsPane.add(positionPane, "grow, wrap");
-
-    controlsPane = new ControlsPane(mpa);
-    bottomPane.add(bottomControlsPane, BorderLayout.CENTER);
-    bottomControlsPane.add(controlsPane, "grow");
-
     statusBar = new StatusBar();
     bottomPane.add(statusBar, BorderLayout.SOUTH);
     
-    /*
     JPanel rightPane = new JPanel();
     rightPane.setLayout(new BorderLayout());
-    rightPane.add(new JButton("SALVAR TODOS OS CORTES"), BorderLayout.SOUTH);
+    rightPane.add(new JButton("SALVAR TODOS OS CORTES"), BorderLayout.NORTH);
+    //rightPane.add(new JPanel(), BorderLayout.SOUTH);
     
     cutPane = new JPanel(new MigLayout());
     cutPane.add(new CutPanel(), "wrap");
@@ -355,21 +341,21 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     cutPane.add(new JSeparator(), "wrap, pushx, growx");
     cutPane.add(new CutPanel(), "wrap");
     cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    
     
     JPanel barFix = new JPanel();
     barFix.setLayout(new BorderLayout());
     barFix.add(cutPane, BorderLayout.CENTER);
-    barFix.add(new JPanel(), BorderLayout.EAST);
+    barFix.add(new JPanel(), BorderLayout.EAST); //fix scroll bar 
     
     JScrollPane scrollPane = new JScrollPane(barFix);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     
     rightPane.add(scrollPane, BorderLayout.CENTER);
     contentPane.add(rightPane, BorderLayout.EAST);
-    */
+    
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
     setContentPane(contentPane);
