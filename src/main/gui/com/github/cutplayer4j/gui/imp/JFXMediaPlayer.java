@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IPlayerListener;
-import com.github.utils4j.imp.Throwables;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -68,7 +67,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   }
 
   @Override
-  public void setRate(float rate) {
+  public void setRate(double rate) {
     if (isAlive()) {
       player.setRate(rate);
     }

@@ -12,7 +12,7 @@ public interface IMediaPlayer {
 
   void play();
 
-  void setRate(float rate);
+  void setRate(double rate);
 
   void skipTime(long delta);
 

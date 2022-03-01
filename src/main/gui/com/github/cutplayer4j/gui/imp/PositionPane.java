@@ -14,7 +14,6 @@ import javax.swing.event.ChangeListener;
 
 import com.github.cutplayer4j.event.FinishedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
-import com.github.cutplayer4j.event.StoppedEvent;
 import com.github.cutplayer4j.event.TickEvent;
 import com.google.common.eventbus.Subscribe;
 

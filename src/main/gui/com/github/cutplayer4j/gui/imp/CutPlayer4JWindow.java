@@ -5,7 +5,6 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
 import static com.github.cutplayer4j.view.action.Resource.resource;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -186,7 +185,8 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     playbackSpeedMenu = new JMenu(resource("menu.playback.item.speed").name());
     playbackSpeedMenu.setMnemonic(resource("menu.playback.item.speed").mnemonic());
     for (Action action : mpa.playbackSpeedActions()) {
-      playbackSpeedMenu.add(new JMenuItem(action));
+      playbackSpeedMenu.add(new JCheckBoxMenuItem(action));
+      application().subscribe(action);
     }
     playbackMenu.add(playbackSpeedMenu);
     playbackMenu.add(new JSeparator());

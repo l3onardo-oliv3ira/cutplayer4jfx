@@ -7,7 +7,9 @@ import java.util.List;
 
 import javax.swing.Action;
 
+import com.github.cutplayer4j.event.RateEvent;
 import com.google.common.collect.ImmutableList;
+import com.google.common.eventbus.Subscribe;
 
 public final class MediaPlayerActions {
 
@@ -38,11 +40,11 @@ public final class MediaPlayerActions {
 
   private List<Action> createPlaybackSpeedActions() {
     List<Action> actions = new ArrayList<>();
-    actions.add(new RateAction(4f, resource("menu.playback.item.speed.item.x4")));
-    actions.add(new RateAction(2f, resource("menu.playback.item.speed.item.x2")));
+    actions.add(new RateAction(2f, resource("menu.playback.item.speed.item.2x")));
+    actions.add(new RateAction(1.5f, resource("menu.playback.item.speed.item.1.5x")));
     actions.add(new RateAction(1f, resource("menu.playback.item.speed.item.normal")));
-    actions.add(new RateAction(0.5f, resource("menu.playback.item.speed.item./2")));
-    actions.add(new RateAction(0.25f, resource("menu.playback.item.speed.item./4")));
+    actions.add(new RateAction(0.5f, resource("menu.playback.item.speed.item.0.5x")));
+    actions.add(new RateAction(0.25f, resource("menu.playback.item.speed.item.0.25")));
     return ImmutableList.copyOf(actions);
   }
 
@@ -71,7 +73,7 @@ public final class MediaPlayerActions {
   public List<Action> playbackSpeedActions() {
     return playbackSpeedActions;
   }
-
+  
   public List<Action> playbackSkipActions() {
     return playbackSkipActions;
   }
