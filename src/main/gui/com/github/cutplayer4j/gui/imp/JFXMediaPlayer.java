@@ -1,13 +1,16 @@
 package com.github.cutplayer4j.gui.imp;
 
+import static com.github.utils4j.imp.Throwables.tryCall;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
 
 import java.awt.image.BufferedImage;
+import java.net.URI;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
-import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
+import com.github.cutplayer4j.gui.IPlayerListener;
+import com.github.utils4j.imp.Throwables;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -23,10 +26,11 @@ import javafx.util.Duration;
 
 public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
 
-  private IMediaPlayerEventListener listener;
+  private IPlayerListener playerListener;
   private MediaPlayer player;
 
-  public JFXMediaPlayer() {
+  public JFXMediaPlayer(IPlayerListener playerListener) {
+    this.playerListener = playerListener;
   }
 
   private boolean isAlive() {
@@ -34,10 +38,12 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   }
 
   @Override
-  public void mute() {
+  public boolean toggleMute() {
     if (isAlive()) {
-      player.setMute(true);
+      player.setMute(!player.isMute());
+      return player.isMute();
     }
+    return false;
   }
 
   @Override
@@ -69,10 +75,9 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   }
 
   @Override
-  public void skipTime(long delta) {
+  public void skipTime(long deltaSeconds) {
     if (isAlive()) {
-      Duration current = player.getCurrentTime();
-      player.seek(delta > 0 ? current.add(Duration.seconds(delta)) : current.subtract(Duration.seconds(delta)));
+      player.seek(Duration.seconds(player.getCurrentTime().toSeconds() + deltaSeconds));
     }
   }
 
@@ -130,13 +135,19 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   }
 
   @Override
-  public void play(String uri) {
+  public boolean play(String uri) {
     if (isAlive()) {
       player.stop();
       player.dispose();
+      player = null;
     }
-    Media media = new Media(uri);
-    player = new MediaPlayer(media);
+    try {
+      player = new MediaPlayer(new Media(uri));
+    }catch(Exception e) {
+      player = null;
+      playerListener.error();
+      return false;
+    }
     MediaView mediaView = new MediaView(player);
     mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
     mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
@@ -148,6 +159,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
     setScene(scene);
     doAttach();
     play();
+    return true;
   }
 
   @Override
@@ -171,25 +183,15 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
     return (long)player.getTotalDuration().toMillis();
   }
 
-  @Override
-  public void toggleFullScreen() {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public void attachListener(IMediaPlayerEventListener listener) {
-    this.listener = listener;
-    doAttach();
-  }
-
   private void doAttach() {
     if (!isAlive())
       return;
-    player.setOnPaused(listener::paused);
-    player.setOnStopped(listener::stopped);
-    player.setOnPlaying(listener::playing);
-    player.setOnReady(listener::ready);
-    player.setOnError(listener::error);
-    player.setOnEndOfMedia(listener::finished);
+    URI uri = tryCall(() -> new URI(player.getMedia().getSource()), (URI)null);
+    player.setOnPaused(playerListener::paused);
+    player.setOnStopped(playerListener::stopped);
+    player.setOnPlaying(() -> playerListener.playing(uri));
+    player.setOnReady(playerListener::ready);
+    player.setOnError(playerListener::error);
+    player.setOnEndOfMedia(playerListener::finished);
   }
 }

@@ -1,15 +1,14 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
-import static com.github.cutplayer4j.imp.CutPlayer4J.resources;
+import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
 import static com.github.cutplayer4j.view.action.Resource.resource;
-import static com.github.utils4j.imp.SwingTools.invokeLater;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,19 +26,12 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.github.cutplayer4j.IMediaPlayer;
-import com.github.cutplayer4j.event.FinishedEvent;
-import com.github.cutplayer4j.event.PausedEvent;
-import com.github.cutplayer4j.event.PlayingEvent;
-import com.github.cutplayer4j.event.ReadyEvent;
-import com.github.cutplayer4j.event.StoppedEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
-import com.github.cutplayer4j.gui.IMediaPlayerEventListener;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
@@ -49,8 +41,6 @@ import net.miginfocom.swing.MigLayout;
 public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4JWindow {
 
   private static final String ACTION_EXIT_FULLSCREEN = "exit-fullscreen";
-  
-  private final JFileChooser fileChooser = new JFileChooser(); ;
   
   private final Action mediaOpenAction;
   
@@ -104,11 +94,12 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     mediaOpenAction = new StandardAction(resource("menu.media.item.openFile")) {
       @Override
       public void actionPerformed(ActionEvent e) {
+        JFileChooser fileChooser = fileChooser();
         if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(CutPlayer4JWindow.this)) {
           File file = fileChooser.getSelectedFile();
-          String mrl = file.getAbsolutePath();
-          application().addRecentMedia(mrl);
-          mediaPlayer.play(file.toURI().toString());
+          if (mediaPlayer.play(file.toURI().toString())) {
+            application().addRecentMedia(file.getAbsolutePath());
+          }
         }
       }
     };
@@ -124,7 +115,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     videoFullscreenAction = new StandardAction(resource("menu.video.item.fullscreen")) {
       @Override
       public void actionPerformed(ActionEvent e) {
-        mediaPlayer.toggleFullScreen();
+        //mediaPlayer.toggleFullScreen(); WE HAVE TO GO BACK HERE!
       }
     };
 
@@ -175,62 +166,6 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       }
     };
     
-    mediaPlayer.attachListener(new IMediaPlayerEventListener() {
-
-      @Override
-      public void playing() {
-        invokeLater(() -> {
-          mediaPlayerPanel.showVideo();
-          application().post(PlayingEvent.INSTANCE);
-        });
-      }
-
-      @Override
-      public void paused() {
-        invokeLater(() -> {
-          application().post(PausedEvent.INSTANCE);
-        });
-      }
-
-      @Override
-      public void stopped() {
-        invokeLater(() -> {
-          mediaPlayerPanel.showIdle();
-          application().post(StoppedEvent.INSTANCE);
-        });
-      }
-
-      @Override
-      public void finished() {
-        invokeLater(() -> {
-          application().post(FinishedEvent.INSTANCE);
-        });
-      }
-
-      @Override
-      public void error() {
-        invokeLater(() ->  {
-          mediaPlayerPanel.showIdle();
-          application().post(StoppedEvent.INSTANCE);
-          File selectedFile = fileChooser.getSelectedFile(); 
-          JOptionPane.showMessageDialog(
-            CutPlayer4JWindow.this, 
-            MessageFormat.format(
-              resources().getString("error.errorEncountered"), selectedFile != null ? selectedFile.getAbsolutePath() : ""), 
-              resources().getString("dialog.errorEncountered"), 
-              JOptionPane.ERROR_MESSAGE
-            );
-        });
-      }
-
-      @Override
-      public void ready() {
-        invokeLater(() -> {
-          application().post(ReadyEvent.INSTANCE);
-        });
-      }
-    });
-
     menuBar = new JMenuBar();
 
     mediaMenu = new JMenu(resource("menu.media").name());
@@ -329,12 +264,41 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     statusBar = new StatusBar();
     bottomPane.add(statusBar, BorderLayout.SOUTH);
     
-    JPanel rightPane = new JPanel();
-    rightPane.setLayout(new BorderLayout());
-    rightPane.add(new JButton("SALVAR TODOS OS CORTES"), BorderLayout.NORTH);
-    //rightPane.add(new JPanel(), BorderLayout.SOUTH);
+    JPanel leftPane = new JPanel();
+    leftPane.setLayout(new BorderLayout());
+    
+    JPanel cutTools = new JPanel();
+    JButton b = new JButton("SALVAR TODOS OS CORTES");
+    cutTools.add(b);
+    leftPane.add(cutTools, BorderLayout.SOUTH);
     
     cutPane = new JPanel(new MigLayout());
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
+    cutPane.add(new CutPanel(), "wrap");
+    cutPane.add(new JSeparator(), "wrap, pushx, growx");
     cutPane.add(new CutPanel(), "wrap");
     cutPane.add(new JSeparator(), "wrap, pushx, growx");
     cutPane.add(new CutPanel(), "wrap");
@@ -353,8 +317,8 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     
-    rightPane.add(scrollPane, BorderLayout.CENTER);
-    contentPane.add(rightPane, BorderLayout.EAST);
+    leftPane.add(scrollPane, BorderLayout.CENTER);
+    contentPane.add(leftPane, BorderLayout.WEST);
     
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
@@ -365,7 +329,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     getActionMap().put(ACTION_EXIT_FULLSCREEN, new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        application().mediaPlayer().toggleFullScreen();
+        ///application().mediaPlayer().toggleFullScreen();  WE HAVE TO GO BACK HERE!
         videoFullscreenAction.select(false);
       }
     });
@@ -395,7 +359,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     boolean statusBarVisible = prefs.getBoolean("statusBar", false);
     statusBar.setVisible(statusBarVisible);
     viewStatusBarAction.select(statusBarVisible);
-    fileChooser.setCurrentDirectory(new File(prefs.get("chooserDirectory", ".")));
+    fileChooser().setCurrentDirectory(new File(prefs.get("chooserDirectory", ".")));
     String recentMedia = prefs.get("recentMedia", "");
     if (recentMedia.length() > 0) {
       List<String> mrls = Arrays.asList(prefs.get("recentMedia", "").split("\\|"));
@@ -417,7 +381,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       prefs.putInt  ("frameHeight"   , getHeight());
       prefs.putBoolean("alwaysOnTop"   , isAlwaysOnTop());
       prefs.putBoolean("statusBar"     , statusBar.isVisible());
-      prefs.put     ("chooserDirectory", fileChooser.getCurrentDirectory().toString());
+      prefs.put     ("chooserDirectory", fileChooser().getCurrentDirectory().toString());
       String recentMedia;
       List<String> mrls = application().recentMedia();
       if (!mrls.isEmpty()) {

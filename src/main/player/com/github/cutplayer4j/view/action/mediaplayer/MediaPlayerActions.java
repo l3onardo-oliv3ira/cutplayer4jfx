@@ -19,15 +19,21 @@ public final class MediaPlayerActions {
   private final Action playbackPlayAction;
   private final Action playbackStopAction;
   private final Action videoSnapshotAction;
+  private final Action skipForwardAction;
+  private final Action skipBackAction;
+  private final Action muteAction;
 
   public MediaPlayerActions() {
-    playbackSpeedActions   = createPlaybackSpeedActions();
-    playbackSkipActions    = createPlaybackSkipActions();
-    playbackControlActions = createPlaybackControlActions();
-    audioControlActions    = createAudioControlActions();
     playbackPlayAction     = new PlayAction(resource("menu.playback.item.play"));
     playbackStopAction     = new StopAction(resource("menu.playback.item.stop"));
     videoSnapshotAction    = new SnapshotAction(resource("menu.video.item.snapshot"));
+    skipForwardAction      = new SkipAction(60, resource("menu.playback.item.skipForward" ));
+    skipBackAction         = new SkipAction(-60, resource("menu.playback.item.skipBackward"));
+    muteAction             = new MuteAction(resource("menu.audio.item.mute"));
+    playbackSpeedActions   = createPlaybackSpeedActions();
+    playbackControlActions = createPlaybackControlActions();
+    audioControlActions    = createAudioControlActions();
+    playbackSkipActions    = createPlaybackSkipActions();
   }
 
   private List<Action> createPlaybackSpeedActions() {
@@ -42,8 +48,8 @@ public final class MediaPlayerActions {
 
   private List<Action> createPlaybackSkipActions() {
     List<Action> actions = new ArrayList<>();
-    actions.add(new SkipAction(10000, resource("menu.playback.item.skipForward" )));
-    actions.add(new SkipAction(-10000, resource("menu.playback.item.skipBackward")));
+    actions.add(skipForwardAction);
+    actions.add(skipBackAction);
     return ImmutableList.copyOf(actions);
   }
 
@@ -56,9 +62,9 @@ public final class MediaPlayerActions {
 
   private List<Action> createAudioControlActions() {
     List<Action> actions = new ArrayList<>();
-    actions.add(new VolumeAction(10,  resource("menu.audio.item.increaseVolume")));
-    actions.add(new VolumeAction(-10, resource("menu.audio.item.decreaseVolume")));
-    actions.add(new MuteAction(resource("menu.audio.item.mute")));
+    actions.add(new VolumeAction(1,  resource("menu.audio.item.increaseVolume")));
+    actions.add(new VolumeAction(-1, resource("menu.audio.item.decreaseVolume")));
+    actions.add(muteAction);
     return ImmutableList.copyOf(actions);
   }
 
@@ -88,5 +94,17 @@ public final class MediaPlayerActions {
 
   public Action videoSnapshotAction() {
     return videoSnapshotAction;
+  }
+
+  public Action skipBackAction() {
+    return skipBackAction;
+  }
+
+  public Action skipForwardAction() {
+    return skipForwardAction;
+  }
+
+  public Action muteAction() {
+    return muteAction;
   }
 }

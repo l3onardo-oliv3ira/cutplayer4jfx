@@ -2,6 +2,13 @@ package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.time.Time.formatTime;
+import static com.github.utils4j.imp.Strings.trim;
+import static com.github.utils4j.imp.Throwables.tryRun;
+
+import java.awt.Desktop;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,7 +23,7 @@ final class StatusBar extends JPanel {
 
   private final JLabel titleLabel;
 
-  private final JLabel rateLabel;
+  private final JLabel sizeLabel;
 
   private final JLabel timeLabel;
 
@@ -26,12 +33,23 @@ final class StatusBar extends JPanel {
 
   StatusBar() {
     titleLabel = new BorderedStandardLabel();
-    rateLabel = new BorderedStandardLabel();
+    titleLabel.addMouseListener(new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        tryRun(() -> {
+          File f = new File(trim(titleLabel.getText()));
+          if (f.exists()) {
+            Desktop.getDesktop().open(f.getParentFile());
+          }
+        });
+      }  
+    });
+    
+    sizeLabel = new BorderedStandardLabel();
     timeLabel = new BorderedStandardLabel();
 
     setLayout(new MigLayout("fillx, insets 2 n n n", "[grow]16[][]", "[]"));
     add(titleLabel, "grow");
-    add(rateLabel);
+    add(sizeLabel);
     add(timeLabel);
 
     application().subscribe(this);
@@ -41,12 +59,17 @@ final class StatusBar extends JPanel {
     titleLabel.setText(title);
   }
 
-  void setRate(String rate) {
-    rateLabel.setText(rate);
+  void setSize(String size) {
+    sizeLabel.setText(size);
   }
 
   void setTime(long time) {
     this.time = time;
+  }
+  
+  void setFile(File file) {
+    setTitle(file.getAbsolutePath());
+    setSize(String.format("%.2fMB", file.length() / 1024d / 1024d) );
   }
 
   void setDuration(long duration) {
@@ -56,7 +79,7 @@ final class StatusBar extends JPanel {
 
   void clear() {
     titleLabel.setText(null);
-    rateLabel.setText(null);
+    sizeLabel.setText(null);
     timeLabel.setText(null);
   }
 
@@ -73,5 +96,6 @@ final class StatusBar extends JPanel {
   @Subscribe
   public void onPlaying(PlayingEvent e) {
     setDuration(application().mediaPlayer().duration());
+    setFile(e.getFile());
   }
 }

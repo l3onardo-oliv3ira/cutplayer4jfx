@@ -1,6 +1,8 @@
 package com.github.cutplayer4j.gui;
 
-public interface IMediaPlayerEventListener {
+import java.net.URI;
+
+public interface IPlayerListener {
 
   void ready();
 
@@ -12,5 +14,5 @@ public interface IMediaPlayerEventListener {
 
   void paused();
 
-  void playing();
+  void playing(URI source);
 }

@@ -20,7 +20,7 @@ public final class ImagePane extends JComponent {
 
   private static final long serialVersionUID = 1L;
 
-  public enum Mode {
+  public static enum Mode {
     DEFAULT,
     CENTER,
     FIT

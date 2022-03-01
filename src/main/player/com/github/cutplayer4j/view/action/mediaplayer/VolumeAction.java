@@ -5,6 +5,7 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.IMediaPlayer;
+import com.github.cutplayer4j.event.VolumeEvent;
 import com.github.cutplayer4j.view.action.Resource;
 
 @SuppressWarnings("serial")
@@ -20,6 +21,7 @@ final class VolumeAction extends MediaPlayerAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     IMediaPlayer component = application().mediaPlayer();
-    component.setVolume(component.volume() + delta);
+    component.setVolume(component.volume() + (delta / 10d));
+    application().post(new VolumeEvent(component.volume()));
   }
 }
