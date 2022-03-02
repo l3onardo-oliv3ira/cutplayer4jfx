@@ -30,11 +30,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
 import com.github.cutplayer4j.IMediaPlayer;
+import com.github.cutplayer4j.event.SnapshotImageEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.Resource;
 import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
+import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -80,7 +82,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
 
   private final JPanel bottomPane;
   
-  private final JPanel cutPane;
+  private final CutManagerPanel cutManagerPane;
   
   private final IMediaPlayerViewer mediaPlayerPanel;
   
@@ -270,46 +272,12 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     JPanel cutTools = new JPanel();
     JButton b = new JButton("SALVAR TODOS OS CORTES");
     cutTools.add(b);
-    leftPane.add(cutTools, BorderLayout.SOUTH);
-    
-    cutPane = new JPanel(new MigLayout());
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    cutPane.add(new CutPanel(), "wrap");
-    cutPane.add(new JSeparator(), "wrap, pushx, growx");
-    
+    //leftPane.add(cutTools, BorderLayout.SOUTH);
     
     JPanel barFix = new JPanel();
     barFix.setLayout(new BorderLayout());
-    barFix.add(cutPane, BorderLayout.CENTER);
+    cutManagerPane = new CutManagerPanel();
+    barFix.add(cutManagerPane, BorderLayout.CENTER);
     barFix.add(new JPanel(), BorderLayout.EAST); //fix scroll bar 
     
     JScrollPane scrollPane = new JScrollPane(barFix);
@@ -335,6 +303,11 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     });
   }
   
+  @Subscribe
+  public void onSnapshotImage(SnapshotImageEvent event) {
+    new SnapshotView(event.image());
+  }
+  
   private ActionMap getActionMap() {
     JComponent c = (JComponent) getContentPane();
     return c.getActionMap();
@@ -348,8 +321,8 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   private void applyPreferences() {
     Preferences prefs = Preferences.userNodeForPackage(CutPlayer4JWindow.class);
     setBounds(
-      prefs.getInt("frameX"   , 100),
-      prefs.getInt("frameY"   , 100),
+      prefs.getInt("frameX", 100),
+      prefs.getInt("frameY", 100),
       prefs.getInt("frameWidth" , 800),
       prefs.getInt("frameHeight", 600)
     );
@@ -375,13 +348,13 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   protected void onShutdown() {
     if (wasShown()) {
       Preferences prefs = Preferences.userNodeForPackage(CutPlayer4JWindow.class);
-      prefs.putInt  ("frameX"      , getX   ());
-      prefs.putInt  ("frameY"      , getY   ());
-      prefs.putInt  ("frameWidth"    , getWidth ());
-      prefs.putInt  ("frameHeight"   , getHeight());
-      prefs.putBoolean("alwaysOnTop"   , isAlwaysOnTop());
-      prefs.putBoolean("statusBar"     , statusBar.isVisible());
-      prefs.put     ("chooserDirectory", fileChooser().getCurrentDirectory().toString());
+      prefs.putInt("frameX", getX());
+      prefs.putInt("frameY", getY());
+      prefs.putInt("frameWidth", getWidth());
+      prefs.putInt("frameHeight", getHeight());
+      prefs.putBoolean("alwaysOnTop", isAlwaysOnTop());
+      prefs.putBoolean("statusBar", statusBar.isVisible());
+      prefs.put("chooserDirectory", fileChooser().getCurrentDirectory().toString());
       String recentMedia;
       List<String> mrls = application().recentMedia();
       if (!mrls.isEmpty()) {

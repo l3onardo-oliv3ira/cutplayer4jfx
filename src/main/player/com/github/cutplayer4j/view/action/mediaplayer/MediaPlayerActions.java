@@ -57,8 +57,8 @@ public final class MediaPlayerActions {
 
   private List<Action> createPlaybackControlActions() {
     List<Action> actions = new ArrayList<>();
-    actions.add(new PlayAction(resource("menu.playback.item.play")));
-    actions.add(new StopAction(resource("menu.playback.item.stop")));
+    actions.add(playbackPlayAction);
+    actions.add(playbackStopAction);
     return ImmutableList.copyOf(actions);
   }
 
