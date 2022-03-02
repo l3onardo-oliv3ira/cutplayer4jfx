@@ -41,6 +41,9 @@ final class RecentMediaMenu extends OnDemandMenu {
 
     public PlayRecentAction(int number, String mrl) {
       super(String.format("%d: %s", number, mrl));
+      Resource resource = resource("menu.media.item.recent.item.video");
+      putValue(Action.SMALL_ICON, resource.menuIcon());
+      putValue(Action.LARGE_ICON_KEY, resource.buttonIcon());
       putValue(Action.MNEMONIC_KEY, number < 10 ? number : 0);
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(String.format("control %d", number < 10 ? number : 0)));
       this.mrl = new File(mrl).toURI().toString();

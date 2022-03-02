@@ -32,6 +32,7 @@ import javax.swing.JSeparator;
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
+import com.github.cutplayer4j.view.action.Resource;
 import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 
@@ -171,6 +172,8 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     mediaMenu.setMnemonic(resource("menu.media").mnemonic());
     mediaMenu.add(new JMenuItem(mediaOpenAction));
     mediaRecentMenu = new RecentMediaMenu(resource("menu.media.item.recent")).menu();
+    mediaRecentMenu.setIcon(resource("menu.media.item.recent").menuIcon());
+    
     mediaMenu.add(mediaRecentMenu);
     mediaMenu.add(new JSeparator());
     mediaMenu.add(new JMenuItem(mediaQuitAction));
@@ -196,12 +199,8 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     }
     playbackMenu.add(new JSeparator());
     for (Action action : mpa.playbackControlActions()) {
-      playbackMenu.add(new JMenuItem(action) { 
-        @Override
-        public String getToolTipText() {
-          return null;
-        }
-      });
+      application().subscribe(action);
+      playbackMenu.add(new JMenuItem(action));
     }
     menuBar.add(playbackMenu);
 
