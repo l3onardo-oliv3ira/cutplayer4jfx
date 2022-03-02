@@ -12,10 +12,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IPlayerListener;
-import com.github.utils4j.imp.Throwables;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;

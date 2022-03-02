@@ -9,7 +9,6 @@ import static com.github.utils4j.imp.SwingTools.invokeLater;
 import java.awt.CardLayout;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 
 import javax.swing.JOptionPane;

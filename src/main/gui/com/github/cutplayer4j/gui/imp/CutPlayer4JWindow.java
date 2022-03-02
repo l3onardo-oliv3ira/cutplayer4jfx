@@ -33,7 +33,6 @@ import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.SnapshotImageEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
-import com.github.cutplayer4j.view.action.Resource;
 import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.google.common.eventbus.Subscribe;

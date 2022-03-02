@@ -7,9 +7,7 @@ import java.util.List;
 
 import javax.swing.Action;
 
-import com.github.cutplayer4j.event.RateEvent;
 import com.google.common.collect.ImmutableList;
-import com.google.common.eventbus.Subscribe;
 
 public final class MediaPlayerActions {
 
