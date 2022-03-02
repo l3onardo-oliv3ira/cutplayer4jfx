@@ -17,6 +17,8 @@ public interface IMediaPlayer {
   void skipTime(long delta);
 
   void stop();
+  
+  void close();
 
   boolean isPlaying();
   

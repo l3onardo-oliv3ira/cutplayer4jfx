@@ -19,9 +19,6 @@ final class PlayAction extends MediaPlayerAction {
     IMediaPlayer component = application().mediaPlayer();
     if (!component.isPlaying()) {
       component.play();
-    } else {
-      component.pause();
     }
   }
-
 }

@@ -81,9 +81,9 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   
   private final JPanel cutPane;
   
-  private IMediaPlayerViewer mediaPlayerPanel;
+  private final IMediaPlayerViewer mediaPlayerPanel;
   
-  private IMediaPlayer mediaPlayer;
+  private final IMediaPlayer mediaPlayer;
   
   public CutPlayer4JWindow() {
     super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
@@ -184,6 +184,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     MediaPlayerActions mpa = application().mediaPlayerActions();
     playbackSpeedMenu = new JMenu(resource("menu.playback.item.speed").name());
     playbackSpeedMenu.setMnemonic(resource("menu.playback.item.speed").mnemonic());
+    playbackSpeedMenu.setIcon(resource("menu.playback.item.speed").menuIcon());
     for (Action action : mpa.playbackSpeedActions()) {
       playbackSpeedMenu.add(new JCheckBoxMenuItem(action));
       application().subscribe(action);
@@ -399,6 +400,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       }
       prefs.put("recentMedia", recentMedia);
     }
+    this.mediaPlayer.close();
   }
   
 }

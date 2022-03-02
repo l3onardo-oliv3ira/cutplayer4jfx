@@ -1,7 +1,9 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.utils4j.imp.Throwables.tryCall;
+import static com.github.utils4j.imp.Throwables.tryRun;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
+import static javafx.beans.binding.Bindings.selectDouble;
 
 import java.awt.image.BufferedImage;
 import java.net.URI;
@@ -10,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IPlayerListener;
+import com.github.utils4j.imp.Throwables;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -21,6 +24,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
@@ -135,11 +139,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
 
   @Override
   public boolean play(String uri) {
-    if (isAlive()) {
-      player.stop();
-      player.dispose();
-      player = null;
-    }
+    this.close();
     try {
       player = new MediaPlayer(new Media(uri));
     }catch(Exception e) {
@@ -148,15 +148,15 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       return false;
     }
     MediaView mediaView = new MediaView(player);
-    mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-    mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+    mediaView.fitHeightProperty().bind(selectDouble(mediaView.sceneProperty(), "height"));
+    mediaView.fitWidthProperty().bind(selectDouble(mediaView.sceneProperty(), "width"));
     mediaView.setPreserveRatio(true);
     StackPane root = new StackPane();
     root.getChildren().add(mediaView);
     final Scene scene = new Scene(root);
-    scene.setFill(javafx.scene.paint.Color.BLACK);
+    scene.setFill(Color.BLACK);
     setScene(scene);
-    doAttach();
+    bindListeners();
     play();
     return true;
   }
@@ -182,15 +182,22 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
     return (long)player.getTotalDuration().toMillis();
   }
 
-  private void doAttach() {
-    if (!isAlive())
-      return;
+  private void bindListeners() {
     URI uri = tryCall(() -> new URI(player.getMedia().getSource()), (URI)null);
+    player.setOnPlaying(() -> playerListener.playing(uri));
     player.setOnPaused(playerListener::paused);
     player.setOnStopped(playerListener::stopped);
-    player.setOnPlaying(() -> playerListener.playing(uri));
     player.setOnReady(playerListener::ready);
     player.setOnError(playerListener::error);
     player.setOnEndOfMedia(playerListener::finished);
+  }
+
+  @Override
+  public void close() {
+    if (isAlive()) {
+      tryRun(player::stop);
+      tryRun(player::dispose);
+      player = null;
+    }
   }
 }
