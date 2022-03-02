@@ -1,7 +1,7 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
-import static com.github.cutplayer4j.view.action.Resource.resource;
+import static com.github.cutplayer4j.view.action.ResourceAction.resource;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -13,12 +13,12 @@ import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import com.github.cutplayer4j.view.action.Resource;
-import com.github.cutplayer4j.view.action.StandardAction;
+import com.github.utils4j.gui.IResourceAction;
+import com.github.utils4j.gui.imp.StandardAction;
 
 final class RecentMediaMenu extends OnDemandMenu {
 
-  RecentMediaMenu(Resource resource) {
+  RecentMediaMenu(IResourceAction resource) {
     super(resource, true);
   }
 
@@ -41,7 +41,7 @@ final class RecentMediaMenu extends OnDemandMenu {
 
     public PlayRecentAction(int number, String mrl) {
       super(String.format("%d: %s", number, mrl));
-      Resource resource = resource("menu.media.item.recent.item.video");
+      IResourceAction resource = resource("menu.media.item.recent.item.video");
       putValue(Action.SMALL_ICON, resource.menuIcon());
       putValue(Action.LARGE_ICON_KEY, resource.buttonIcon());
       putValue(Action.MNEMONIC_KEY, number < 10 ? number : 0);

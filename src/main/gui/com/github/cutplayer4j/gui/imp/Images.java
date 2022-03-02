@@ -1,6 +1,6 @@
 package com.github.cutplayer4j.gui.imp;
 
-import com.github.utils4j.imp.IPicture;
+import com.github.utils4j.gui.IPicture;
 
 public enum Images implements IPicture {
   

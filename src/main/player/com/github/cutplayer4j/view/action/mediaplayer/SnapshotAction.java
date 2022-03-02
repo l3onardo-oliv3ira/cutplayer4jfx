@@ -6,12 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 
 import com.github.cutplayer4j.event.SnapshotImageEvent;
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 
-@SuppressWarnings("serial")
 final class SnapshotAction extends MediaPlayerAction {
 
-  SnapshotAction(Resource resource) {
+  SnapshotAction(IResourceAction resource) {
     super(resource);
   }
 

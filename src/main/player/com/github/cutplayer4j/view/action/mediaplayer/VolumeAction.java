@@ -6,14 +6,13 @@ import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.VolumeEvent;
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 
-@SuppressWarnings("serial")
 final class VolumeAction extends MediaPlayerAction {
 
   private final int delta;
 
-  VolumeAction(int delta, Resource resource) {
+  VolumeAction(int delta, IResourceAction resource) {
     super(resource);
     this.delta = delta;
   }

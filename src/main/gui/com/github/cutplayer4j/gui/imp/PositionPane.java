@@ -19,7 +19,7 @@ import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
 
-final class PositionPane extends JPanel {
+final class PositionPane extends EventAwarePanel {
 
   private final JLabel timeLabel;
 
@@ -68,8 +68,6 @@ final class PositionPane extends JPanel {
 
     timeLabel.setText("-:--:--");
     durationLabel.setText("-:--:--");
-    
-    application().subscribe(this);
   }
 
   private void refresh() {

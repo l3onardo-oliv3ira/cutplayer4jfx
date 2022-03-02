@@ -4,7 +4,7 @@ import javax.swing.JMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 
 public abstract class OnDemandMenu implements MenuListener {
 
@@ -12,11 +12,11 @@ public abstract class OnDemandMenu implements MenuListener {
 
   private final boolean clearOnPrepare;
 
-  public OnDemandMenu(Resource resource) {
+  public OnDemandMenu(IResourceAction resource) {
     this(resource, false);
   }
 
-  public OnDemandMenu(Resource resource, boolean clearOnPrepare) {
+  public OnDemandMenu(IResourceAction resource, boolean clearOnPrepare) {
     this.menu = new JMenu(resource.name());
     this.menu.setMnemonic(resource.mnemonic());
     this.menu.addMenuListener(this);

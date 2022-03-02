@@ -60,6 +60,21 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       return false;
     return MediaPlayer.Status.PLAYING == player.getStatus();
   }
+  
+  @Override
+  public boolean isMarkable() {
+    if (!isAlive())
+      return false;
+    switch (player.getStatus()) {
+      case PAUSED:
+      case PLAYING:
+      case READY:
+      case STOPPED:
+        return true;
+      default:
+        return false;
+    }
+  }
 
   @Override
   public void play() {

@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
@@ -19,7 +18,7 @@ import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
 
-final class StatusBar extends JPanel {
+final class StatusBar extends EventAwarePanel {
 
   private final JLabel titleLabel;
 
@@ -51,8 +50,6 @@ final class StatusBar extends JPanel {
     add(titleLabel, "grow");
     add(sizeLabel);
     add(timeLabel);
-
-    application().subscribe(this);
   }
 
   void setTitle(String title) {

@@ -5,12 +5,11 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.IMediaPlayer;
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 
-@SuppressWarnings("serial")
 final class PauseAction extends MediaPlayerAction {
 
-  PauseAction(Resource resource) {
+  PauseAction(IResourceAction resource) {
     super(resource);
   }
 

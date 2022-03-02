@@ -2,7 +2,7 @@ package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
-import static com.github.cutplayer4j.view.action.Resource.resource;
+import static com.github.cutplayer4j.view.action.ResourceAction.resource;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -33,8 +33,9 @@ import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.SnapshotImageEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
-import com.github.cutplayer4j.view.action.StandardAction;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
+import com.github.utils4j.gui.imp.StandardAction;
+import com.github.videohandler4j.gui.imp.CutManagerPanel;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -304,7 +305,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   
   @Subscribe
   public void onSnapshotImage(SnapshotImageEvent event) {
-    new SnapshotView(event.image());
+    new SnapshotFrame(event.image());
   }
   
   private ActionMap getActionMap() {

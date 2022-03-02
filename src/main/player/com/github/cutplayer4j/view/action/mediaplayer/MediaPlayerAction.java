@@ -1,13 +1,13 @@
 package com.github.cutplayer4j.view.action.mediaplayer;
 
-import com.github.cutplayer4j.view.action.Resource;
-import com.github.cutplayer4j.view.action.StandardAction;
+import com.github.utils4j.gui.IResourceAction;
+import com.github.utils4j.gui.imp.StandardAction;
 
 abstract class MediaPlayerAction extends StandardAction {
 
   private static final long serialVersionUID = 1L;
 
-  MediaPlayerAction(Resource resource) {
+  MediaPlayerAction(IResourceAction resource) {
     super(resource);
   }
 }

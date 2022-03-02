@@ -1,6 +1,6 @@
 package com.github.cutplayer4j.view.action.mediaplayer;
 
-import static com.github.cutplayer4j.view.action.Resource.resource;
+import static com.github.cutplayer4j.view.action.ResourceAction.resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,8 @@ public final class MediaPlayerActions {
   private final Action skipForwardAction;
   private final Action skipBackAction;
   private final Action muteAction;
+  private final Action cutStartAction;
+  private final Action cutEndAction;
 
   public MediaPlayerActions() {
     playbackPlayAction     = new PlayAction(resource("menu.playback.item.play"));
@@ -29,6 +31,9 @@ public final class MediaPlayerActions {
     videoSnapshotAction    = new SnapshotAction(resource("menu.video.item.snapshot"));
     skipForwardAction      = new SkipAction(60, resource("menu.playback.item.skipForward" ));
     skipBackAction         = new SkipAction(-60, resource("menu.playback.item.skipBackward"));
+    cutStartAction         = new CutAction(true, resource("menu.playback.item.cutStart"));
+    cutEndAction           = new CutAction(false, resource("menu.playback.item.cutEnd"));
+    
     muteAction             = new MuteAction(resource("menu.audio.item.mute"));
     playbackSpeedActions   = createPlaybackSpeedActions();
     playbackControlActions = createPlaybackControlActions();
@@ -106,5 +111,13 @@ public final class MediaPlayerActions {
 
   public Action muteAction() {
     return muteAction;
+  }
+
+  public Action cutStartAction() {
+    return cutStartAction;
+  }
+
+  public Action cutEndAction() {
+    return cutEndAction;
   }
 }

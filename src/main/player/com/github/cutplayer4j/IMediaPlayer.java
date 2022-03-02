@@ -33,5 +33,7 @@ public interface IMediaPlayer {
   long position();
   
   long duration();
+
+  boolean isMarkable();
 }
 

@@ -5,6 +5,7 @@ import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import com.github.cutplayer4j.gui.imp.ImagePane.Mode;
 import com.github.utils4j.imp.Strings;
@@ -24,7 +26,7 @@ import com.google.common.io.Files;
 
 import net.miginfocom.swing.MigLayout;
 
-public class SnapshotView extends JFrame {
+public class SnapshotFrame extends JFrame {
 
   private static final String DEFAULT_FILE_EXTENSION = "png";
 
@@ -32,35 +34,45 @@ public class SnapshotView extends JFrame {
 
   private final BufferedImage image;
 
-  public SnapshotView(BufferedImage image) {
+  public SnapshotFrame(BufferedImage image) {
     this.image = image;
     setTitle(resources().getString("dialog.snapshot.title"));
-    JPanel contentPane = new JPanel();
-    contentPane.setLayout(new BorderLayout());
-    contentPane.add(new ImagePane(Mode.DEFAULT, image, 1.0f), BorderLayout.CENTER);
-    contentPane.add(new ActionPane(), BorderLayout.SOUTH);
-    setContentPane(contentPane);
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    pack();
+    setSize(600, 400);
+    buildPanels();
     setLocationByPlatform(true);
     setVisible(true);
   }
 
-  private class ActionPane extends JPanel {
-
-    private ActionPane() {
-      setLayout(new MigLayout("fillx", "push[]", "[]"));
-      JButton saveButton = new JButton("Save");
-      add(saveButton);
-      saveButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          onSave();
-        }
-      });
-    }
+  private void buildPanels() {
+    JPanel contentPane = new JPanel();
+    contentPane.setLayout(new BorderLayout());
+    contentPane.add(center(), BorderLayout.CENTER);
+    contentPane.add(south(), BorderLayout.SOUTH);
+    setContentPane(contentPane);
   }
-  
+
+  private Component south() {
+    JPanel south = new JPanel();
+    south.setLayout(new MigLayout("fillx", "push[]", "[]"));
+    JButton saveButton = new JButton(resources().getString("dialog.snapshot.save.title"));
+    saveButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        onSave();
+      }
+    });
+    south.add(saveButton);
+    return south;
+  }
+
+  private JScrollPane center() {
+    JScrollPane centerPane = new JScrollPane();
+    ImagePane imagePane = new ImagePane(Mode.DEFAULT, image, 1.0f);
+    centerPane.setViewportView(imagePane);
+    return centerPane;
+  }
+
   private void onSave() {
     if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(this)) {
       File file = fileChooser.getSelectedFile();

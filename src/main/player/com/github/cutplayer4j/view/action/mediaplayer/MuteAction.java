@@ -5,12 +5,11 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.event.MuteEvent;
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 
-@SuppressWarnings("serial")
 final class MuteAction extends MediaPlayerAction {
 
-  MuteAction(Resource resource) {
+  MuteAction(IResourceAction resource) {
     super(resource);
   }
 

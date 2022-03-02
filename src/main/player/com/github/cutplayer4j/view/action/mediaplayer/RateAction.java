@@ -5,15 +5,15 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.event.RateEvent;
-import com.github.cutplayer4j.view.action.Resource;
+import com.github.utils4j.gui.IResourceAction;
 import com.google.common.eventbus.Subscribe;
 
-@SuppressWarnings("serial")
+
 final class RateAction extends MediaPlayerAction {
 
   private final double rate;
 
-  RateAction(double rate, Resource resource) {
+  RateAction(double rate, IResourceAction resource) {
     super(resource);
     this.rate = rate;
     select(this.rate == 1);

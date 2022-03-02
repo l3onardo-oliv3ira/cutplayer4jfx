@@ -21,7 +21,7 @@ import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
 
-final class ControlsPane extends BasePanel {
+final class ControlsPane extends EventAwarePanel {
 
   private final Icon playIcon = newIcon("play");
 
@@ -33,12 +33,6 @@ final class ControlsPane extends BasePanel {
 
   private final Icon fullscreenIcon = newIcon("fullscreen");
 
-  private final Icon snapshotIcon = newIcon("snapshot");
-
-  private final Icon cutStartIcon = newIcon("cut-start");
-  
-  private final Icon cutEndIcon = newIcon("cut-end");
-  
   private final Icon volumeHighIcon = newIcon("volume-high");
 
   private final Icon volumeMutedIcon = newIcon("volume-muted");
@@ -84,12 +78,10 @@ final class ControlsPane extends BasePanel {
     snapshotButton.setAction(mediaPlayerActions.videoSnapshotAction());
     
     cutStartButton = new StandardButton();
-    cutStartButton.setIcon(cutStartIcon);
-    //cutStartButton.setAction(mediaPlayerActions.videoSnapshotAction());
+    cutStartButton.setAction(mediaPlayerActions.cutStartAction());
     
     cutEndButton = new StandardButton();
-    cutEndButton.setIcon(cutEndIcon);
-    //cutEndButton.setAction(mediaPlayerActions.videoSnapshotAction());
+    cutEndButton.setAction(mediaPlayerActions.cutEndAction());
     
     muteButton = new StandardButton();
     muteButton.setAction(mediaPlayerActions.muteAction());

@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.swing.TransferHandler;
 
-@SuppressWarnings("serial")
+
 abstract class MediaTransferHandler extends TransferHandler {
 
   private final DataFlavor uriListFlavor;
