@@ -7,23 +7,18 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URI;
 
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.KeyStroke;
 
+import com.github.utils4j.gui.imp.JEscDialog;
 import com.github.utils4j.imp.Throwables;
 
 import net.miginfocom.swing.MigLayout;
 
-final class AboutDialog extends JDialog {
+final class AboutDialog extends JEscDialog {
 
   AboutDialog(Window owner) {
     super(owner, resources().getString("dialog.about"), Dialog.ModalityType.DOCUMENT_MODAL);
@@ -75,14 +70,6 @@ final class AboutDialog extends JDialog {
     add(labelIcons, "grow, spanx 2, wrap");
     add(focusLabel, "grow, spanx 2, wrap");
     add(applicationVersionLabel, "");
-
-    getRootPane().registerKeyboardAction(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
-
     pack();
     setResizable(false);
   }
