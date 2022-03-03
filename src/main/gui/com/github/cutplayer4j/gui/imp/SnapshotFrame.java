@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.github.cutplayer4j.gui.imp.ImagePane.Mode;
+import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Strings;
 import com.google.common.io.Files;
 
@@ -73,7 +74,7 @@ public class SnapshotFrame extends JFrame {
   }
 
   private void onSave() {
-    JFileChooser fileChooser = new JFileChooser();
+    JFileChooser fileChooser = new DefaultFileChooser();
     if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(this)) {
       File file = fileChooser.getSelectedFile();
       try {

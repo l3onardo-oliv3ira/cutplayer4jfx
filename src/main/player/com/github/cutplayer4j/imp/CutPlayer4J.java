@@ -20,6 +20,7 @@ import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.gui.imp.EmbeddedMediaPanel;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
+import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.Strings;
 import com.google.common.eventbus.EventBus;
 
@@ -29,7 +30,7 @@ public class CutPlayer4J implements ICutPlayer4J {
 
   private static final int MAX_RECENT_MEDIA_SIZE = 10;
   
-  private static final JFileChooser FILE_CHOOSER = new JFileChooser();
+  private static final JFileChooser FILE_CHOOSER = new DefaultFileChooser();
   
   private static final class CutPlayer4JHolder {
     private static final CutPlayer4J INSTANCE = new CutPlayer4J();

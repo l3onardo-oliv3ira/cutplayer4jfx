@@ -294,7 +294,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     
     leftPane.add(scrollPane, BorderLayout.CENTER);
-    contentPane.add(leftPane, BorderLayout.WEST);
+    //contentPane.add(leftPane, BorderLayout.WEST);
     
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
@@ -305,7 +305,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     getActionMap().put(ACTION_EXIT_FULLSCREEN, new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        ///application().mediaPlayer().toggleFullScreen();  WE HAVE TO GO BACK HERE!
+        // WE HAVE TO GO BACK HERE!
         videoFullscreenAction.select(false);
       }
     });
