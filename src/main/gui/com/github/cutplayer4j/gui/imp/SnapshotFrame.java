@@ -3,6 +3,7 @@ package com.github.cutplayer4j.gui.imp;
 import static com.github.cutplayer4j.imp.CutPlayer4J.resources;
 import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -29,8 +30,6 @@ import net.miginfocom.swing.MigLayout;
 public class SnapshotFrame extends JFrame {
 
   private static final String DEFAULT_FILE_EXTENSION = "png";
-
-  private final JFileChooser fileChooser = new JFileChooser();
 
   private final BufferedImage image;
 
@@ -74,6 +73,7 @@ public class SnapshotFrame extends JFrame {
   }
 
   private void onSave() {
+    JFileChooser fileChooser = new JFileChooser();
     if (JFileChooser.APPROVE_OPTION == fileChooser.showSaveDialog(this)) {
       File file = fileChooser.getSelectedFile();
       try {
@@ -84,28 +84,34 @@ public class SnapshotFrame extends JFrame {
         }
         boolean wrote = ImageIO.write(image, ext, file);
         if (!wrote) {
-          JOptionPane.showMessageDialog(this, 
-            format(
-              resources().getString("error.saveImage"), 
-              file.toString(), 
-              format(resources().getString("error.saveImageFormat"), ext)
-            ), 
-            resources().getString("dialog.saveImage"), 
-            ERROR_MESSAGE
-          );
+          showFail(file, ext);
         }
-      }
-      catch (IOException e) {
-        JOptionPane.showMessageDialog(
-          this, 
-          format(resources().getString("error.saveImage"), 
-            file.toString(), 
-            e.getMessage()
-          ), 
-          resources().getString("dialog.saveImage"), 
-          JOptionPane.ERROR_MESSAGE
-        );
+      } catch (IOException e) {
+        showFail(file, e);
       }
     }
+  }
+
+  private void showFail(File file, IOException e) {
+    showMessageDialog(this, 
+      format(resources().getString("error.saveImage"), 
+        file.toString(), 
+        e.getMessage()
+      ), 
+      resources().getString("dialog.saveImage"), 
+      JOptionPane.ERROR_MESSAGE
+    );
+  }
+
+  private void showFail(File file, String ext) {
+    showMessageDialog(this, 
+      format(
+        resources().getString("error.saveImage"), 
+        file.toString(), 
+        format(resources().getString("error.saveImageFormat"), ext)
+      ), 
+      resources().getString("dialog.saveImage"), 
+      ERROR_MESSAGE
+    );
   }
 }

@@ -1,7 +1,6 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
-import static com.github.cutplayer4j.time.Time.formatTime;
 import static com.github.utils4j.imp.Strings.trim;
 import static com.github.utils4j.imp.Throwables.tryRun;
 
@@ -14,6 +13,7 @@ import javax.swing.JLabel;
 
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
+import com.github.videohandler4j.imp.TimeTools;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -81,7 +81,7 @@ final class StatusBar extends EventAwarePanel {
   }
 
   void refresh() {
-    timeLabel.setText(String.format("%s/%s", formatTime(time), formatTime(duration)));
+    timeLabel.setText(String.format("%s/%s", TimeTools.toString(time), TimeTools.toString(duration)));
   }
 
   @Subscribe

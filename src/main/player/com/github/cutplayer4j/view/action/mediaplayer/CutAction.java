@@ -5,10 +5,10 @@ import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import java.awt.event.ActionEvent;
 
 import com.github.cutplayer4j.IMediaPlayer;
+import com.github.cutplayer4j.event.CutEndEvent;
+import com.github.cutplayer4j.event.CutStartEvent;
 import com.github.utils4j.gui.IResourceAction;
 import com.github.utils4j.gui.imp.StandardAction;
-import com.github.videohandler4j.gui.event.imp.CutEndEvent;
-import com.github.videohandler4j.gui.event.imp.CutStartEvent;
 
 final class CutAction extends StandardAction {
 

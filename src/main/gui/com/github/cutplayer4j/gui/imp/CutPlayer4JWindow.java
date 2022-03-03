@@ -35,7 +35,6 @@ import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.github.utils4j.gui.imp.StandardAction;
-import com.github.videohandler4j.gui.imp.CutManagerPanel;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -276,7 +275,16 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     
     JPanel barFix = new JPanel();
     barFix.setLayout(new BorderLayout());
-    cutManagerPane = new CutManagerPanel();
+    cutManagerPane = new CutManagerPanel(
+      () -> {
+        contentPane.remove(leftPane);
+        contentPane.updateUI();
+      }, 
+      () -> {
+        contentPane.add(leftPane, BorderLayout.WEST);
+        contentPane.updateUI();
+      }
+    );
     barFix.add(cutManagerPane, BorderLayout.CENTER);
     barFix.add(new JPanel(), BorderLayout.EAST); //fix scroll bar 
     

@@ -1,12 +1,10 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
-import static com.github.cutplayer4j.time.Time.formatTime;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
@@ -15,6 +13,7 @@ import javax.swing.event.ChangeListener;
 import com.github.cutplayer4j.event.FinishedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
+import com.github.videohandler4j.imp.TimeTools;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -66,12 +65,12 @@ final class PositionPane extends EventAwarePanel {
     add(positionSlider, "grow");
     add(durationLabel, "shrink");
 
-    timeLabel.setText("-:--:--");
-    durationLabel.setText("-:--:--");
+    timeLabel.setText("--:--:--");
+    durationLabel.setText("--:--:--");
   }
 
   private void refresh() {
-    timeLabel.setText(formatTime(time));
+    timeLabel.setText(TimeTools.toString(time));
 
     if (!sliderChanging.get()) {
       int value = (int) (application().mediaPlayer().position());
@@ -86,10 +85,10 @@ final class PositionPane extends EventAwarePanel {
   }
   
   void setDuration(long duration) {
-    durationLabel.setText(formatTime(duration));
+    durationLabel.setText(TimeTools.toString(duration));
     positionSlider.setMaximum((int)duration);
   }
-
+  
   @Subscribe
   public void onTick(TickEvent tick) {
     setTime(application().mediaPlayer().position());
