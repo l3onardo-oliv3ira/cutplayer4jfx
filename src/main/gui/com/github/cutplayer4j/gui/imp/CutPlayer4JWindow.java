@@ -3,6 +3,8 @@ package com.github.cutplayer4j.gui.imp;
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
 import static com.github.cutplayer4j.view.action.ResourceAction.resource;
+import static com.github.utils4j.imp.Containers.isEmpty;
+import static com.github.utils4j.imp.Strings.trim;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -29,12 +31,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
-import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.SnapshotImageEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
+import com.github.utils4j.gui.imp.MediaTransferHandler;
 import com.github.utils4j.gui.imp.StandardAction;
+import com.github.utils4j.imp.Containers;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -83,14 +86,12 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   
   private final CutManagerPanel cutManagerPane;
   
-  private final IMediaPlayerViewer mediaPlayerPanel;
-  
-  private final IMediaPlayer mediaPlayer;
+  private final IMediaPlayerViewer playerViewer;
   
   public CutPlayer4JWindow() {
     super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
     
-    mediaPlayer = (mediaPlayerPanel = application().playerViewer()).mediaPlayer();
+    playerViewer = application().playerViewer();
     
     mediaOpenAction = new StandardAction(resource("menu.media.item.openFile")) {
       @Override
@@ -98,7 +99,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
         JFileChooser fileChooser = fileChooser();
         if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(CutPlayer4JWindow.this)) {
           File file = fileChooser.getSelectedFile();
-          if (mediaPlayer.play(file.toURI().toString())) {
+          if (playerViewer.mediaPlayer().play(file.toURI().toString())) {
             application().addRecentMedia(file.getAbsolutePath());
           }
         }
@@ -239,7 +240,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     contentPane.setLayout(new BorderLayout());
     
     JPanel playerPane = new JPanel(new BorderLayout());
-    playerPane.add((JPanel)mediaPlayerPanel, BorderLayout.CENTER);
+    playerPane.add(playerViewer.asPanel(), BorderLayout.CENTER);
 
     JPanel bottomControlsPane = new JPanel();
     bottomControlsPane.setLayout(new MigLayout("fill, insets 0 n n n", "[grow]", "[]0[]"));
@@ -255,7 +256,9 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     contentPane.setTransferHandler(new MediaTransferHandler() {
       @Override
       protected void onMediaDropped(String[] uris) {
-        mediaPlayer.play(uris[0]);
+        if (!isEmpty(uris)) {
+          playerViewer.mediaPlayer().play(new File(trim(uris[0])).toURI().toString());
+        }
       }
     });
     
@@ -292,10 +295,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    
     leftPane.add(scrollPane, BorderLayout.CENTER);
-    //contentPane.add(leftPane, BorderLayout.WEST);
-    
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
     setContentPane(contentPane);
@@ -380,7 +380,6 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       }
       prefs.put("recentMedia", recentMedia);
     }
-    this.mediaPlayer.close();
     application().closeApplication();
   }
   

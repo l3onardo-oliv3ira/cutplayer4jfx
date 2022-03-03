@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IPlayerListener;
+import com.github.utils4j.gui.imp.JfxTools;
 import com.github.utils4j.imp.Args;
 
 import javafx.embed.swing.JFXPanel;

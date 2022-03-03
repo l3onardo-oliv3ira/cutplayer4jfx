@@ -1,10 +1,10 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.gui.imp.Images.CUTPLAYER_BLACK;
-import static com.github.cutplayer4j.gui.imp.SwingTools.invokeLater;
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
 import static com.github.cutplayer4j.imp.CutPlayer4J.resources;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
 import java.awt.CardLayout;
 import java.io.File;

@@ -1,6 +1,6 @@
 package com.github.cutplayer4j.imp;
 
-import static com.github.cutplayer4j.gui.imp.SwingTools.invokeLater;
+import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 import static com.github.utils4j.imp.Throwables.tryRuntime;
 import static javax.swing.UIManager.getSystemLookAndFeelClassName;
 import static javax.swing.UIManager.setLookAndFeel;
