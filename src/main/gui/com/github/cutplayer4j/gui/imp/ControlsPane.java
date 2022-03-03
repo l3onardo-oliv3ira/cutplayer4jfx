@@ -14,9 +14,12 @@ import javax.swing.event.ChangeListener;
 import com.github.cutplayer4j.event.MuteEvent;
 import com.github.cutplayer4j.event.PausedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.SelectVideoSliceEvent;
 import com.github.cutplayer4j.event.StoppedEvent;
+import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.event.VolumeEvent;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
+import com.github.videohandler4j.IVideoSlice;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -117,6 +120,22 @@ final class ControlsPane extends EventAwarePanel {
         //application().mediaPlayer().toggleFullScreen();
       }
     });
+  }
+  
+  private IVideoSlice currentSlice;
+  
+  private void checkPosition(long time) {
+    cutEndButton.setEnabled(currentSlice != null && time > currentSlice.start());
+  }
+
+  @Subscribe
+  public void onSelectVideoSlice(SelectVideoSliceEvent event) {
+    this.currentSlice = event.getSlice();
+  }
+
+  @Subscribe
+  public void onTick(TickEvent tick) {
+    checkPosition(application().mediaPlayer().position());
   }
 
   @Subscribe

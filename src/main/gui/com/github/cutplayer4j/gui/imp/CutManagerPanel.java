@@ -5,7 +5,6 @@ import static java.util.Optional.ofNullable;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.Random;
 
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -14,6 +13,7 @@ import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.CutEndEvent;
 import com.github.cutplayer4j.event.CutStartEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.SelectVideoSliceEvent;
 import com.github.cutplayer4j.gui.ICutManager;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.function.Functions;
@@ -29,9 +29,7 @@ public class CutManagerPanel extends JPanel implements ICutManager {
   
   private static final Color SELECTED = new Color(234, 248, 229);
   
-  private static final Random RANDOM = new Random();
-  
-  private IVideoSliceView selectedPanel;
+  private IVideoSliceView selectedPanel = null;
   
   private File currentMedia;
   
@@ -49,19 +47,16 @@ public class CutManagerPanel extends JPanel implements ICutManager {
     this.onEmpty = ofNullable(onEmpty).orElse(NOTHING);
     this.onTouch = ofNullable(onTouch).orElse(NOTHING);
     setLayout(new MigLayout());
-//    for(int s = 1; s < 4; s++) {
-//      addCutPanel(RANDOM.nextInt(15 * 60 * 1000));
-//    }
-//    onSelected(selectedPanel);
     application().subscribe(this);
   }
 
-  private void addCutPanel(long start) {
-    addCutPanel(start, Long.MAX_VALUE);
+  private IVideoSliceView addCutPanel(long start) {
+    return addCutPanel(start, Long.MAX_VALUE);
   }
   
-  private void addCutPanel(long start, long end) {
-    add((selectedPanel = new VideoSliceView(start, end)
+  private IVideoSliceView addCutPanel(long start, long end) {
+    IVideoSliceView view;
+    add((view = new VideoSliceView(start, end)
       .setOnSelected(this::onSelected)
       .setOnDoSelect(this::onDoSelect)
       .setOnClosed(this::onClosed)
@@ -71,6 +66,7 @@ public class CutManagerPanel extends JPanel implements ICutManager {
       .asPanel(), 
       "wrap"
     );
+    return view;
   }
 
   protected void onStoped(IVideoSliceView panel) {
@@ -90,7 +86,7 @@ public class CutManagerPanel extends JPanel implements ICutManager {
   protected void onClosed(IVideoSliceView panel) {
     if (selectedPanel == panel) {
       //se remover enquanto esstiver salvando?
-      selectedPanel = null;
+      application().post(new SelectVideoSliceEvent(selectedPanel = null));
     }
     remove(panel.asPanel());
     updateUI();
@@ -104,7 +100,7 @@ public class CutManagerPanel extends JPanel implements ICutManager {
     onDoSelect(panel);
     if (previous == panel) {
       previous.asPanel().setBackground(null);
-      selectedPanel = null;
+      application().post(new SelectVideoSliceEvent(selectedPanel = null));
     }
     onStoped(panel);
   }
@@ -115,14 +111,16 @@ public class CutManagerPanel extends JPanel implements ICutManager {
       getComponent(i).setBackground(null);
     }
     panel.asPanel().setBackground(SELECTED);
+    if (selectedPanel != panel) {
+      application().post(new SelectVideoSliceEvent(panel));
+    }
     selectedPanel = panel;
   }
 
   @Subscribe
   protected void onCutStart(CutStartEvent event) {
     long time = event.getTime();
-    addCutPanel(time);
-    onDoSelect(selectedPanel);
+    onDoSelect(addCutPanel(time));
     if (getComponentCount() == 1) {
       onTouch.run();
     }

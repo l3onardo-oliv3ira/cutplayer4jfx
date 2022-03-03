@@ -14,7 +14,7 @@ public interface IMediaPlayer {
 
   void setRate(double rate);
 
-  void skipTime(long delta);
+  void skipTime(long deltaSeconds);
 
   void stop();
   
@@ -28,7 +28,7 @@ public interface IMediaPlayer {
   
   BufferedImage snapshots();
 
-  void setPosition(long position);
+  void setPosition(long positionMillis);
 
   long position();
   

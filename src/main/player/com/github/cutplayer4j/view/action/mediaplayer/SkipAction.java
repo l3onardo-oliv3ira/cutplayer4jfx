@@ -8,16 +8,15 @@ import com.github.utils4j.gui.IResourceAction;
 
 final class SkipAction extends MediaPlayerAction {
 
-  private final long delta;
+  private final long deltaSeconds;
 
-  SkipAction(long delta, IResourceAction resource) {
+  SkipAction(long deltaSeconds, IResourceAction resource) {
     super(resource);
-    this.delta = delta;
+    this.deltaSeconds = deltaSeconds;
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    application().mediaPlayer().skipTime(delta);
+    application().mediaPlayer().skipTime(deltaSeconds);
   }
-
 }

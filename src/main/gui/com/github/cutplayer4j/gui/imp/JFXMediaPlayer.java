@@ -175,9 +175,9 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   }
 
   @Override
-  public void setPosition(long position) {
+  public void setPosition(long positionMillis) {
     if (isAlive()) {
-      player.seek(Duration.millis(position));
+      player.seek(Duration.millis(positionMillis));
     }
   }
 
