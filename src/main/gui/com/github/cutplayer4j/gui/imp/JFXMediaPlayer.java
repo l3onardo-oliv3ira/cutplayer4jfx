@@ -2,18 +2,16 @@ package com.github.cutplayer4j.gui.imp;
 
 import static com.github.utils4j.imp.Throwables.tryCall;
 import static com.github.utils4j.imp.Throwables.tryRun;
-import static com.github.utils4j.imp.Throwables.tryRuntime;
 import static javafx.beans.binding.Bindings.selectDouble;
 
 import java.awt.image.BufferedImage;
 import java.net.URI;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.gui.IPlayerListener;
+import com.github.utils4j.imp.Args;
 
-import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Scene;
@@ -31,7 +29,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   private MediaPlayer player;
 
   public JFXMediaPlayer(IPlayerListener playerListener) {
-    this.playerListener = playerListener;
+    this.playerListener = Args.requireNonNull(playerListener, "playerListener is null");
   }
 
   private boolean isAlive() {
@@ -102,7 +100,7 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
     if (!isAlive())
       return null;
     AtomicReference<BufferedImage> out = new AtomicReference<>();
-    runAndWait(() -> {
+    JfxTools.runAndWait(() -> {
       final Media media = player.getMedia();
       int width = media.getWidth();
       int height = media.getHeight();
@@ -115,18 +113,6 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       out.set(SwingFXUtils.fromFXImage(image, null));
     });
     return out.get();
-  }
-
-  private static void runAndWait(Runnable runnable) {
-    tryRuntime(() -> {
-      if (Platform.isFxApplicationThread()) {
-        runnable.run();
-      } else {
-        FutureTask<Object> futureTask = new FutureTask<>(runnable, null);
-        Platform.runLater(futureTask);
-        futureTask.get();
-      }
-    });
   }
 
   @Override

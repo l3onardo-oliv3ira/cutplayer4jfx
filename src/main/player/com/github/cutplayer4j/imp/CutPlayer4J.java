@@ -1,6 +1,6 @@
 package com.github.cutplayer4j.imp;
 
-import static com.github.utils4j.imp.SwingTools.invokeLater;
+import static com.github.cutplayer4j.gui.imp.SwingTools.invokeLater;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -18,9 +18,10 @@ import com.github.cutplayer4j.ICutPlayer4J;
 import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.TickEvent;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
-import com.github.cutplayer4j.gui.imp.EmbeddedMediaPanel;
+import com.github.cutplayer4j.gui.imp.MediaPlayerViewer;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
+import com.github.utils4j.imp.Services;
 import com.github.utils4j.imp.Strings;
 import com.google.common.eventbus.EventBus;
 
@@ -50,10 +51,8 @@ public class CutPlayer4J implements ICutPlayer4J {
 
   private final EventBus eventBus;
 
-  private final EmbeddedMediaPanel mediaPlayerPanel;
+  private final IMediaPlayerViewer playerViewer;
   
-  private final IMediaPlayer mediaPlayer;
-
   private final MediaPlayerActions mediaPlayerActions;
 
   private final ScheduledExecutorService tickService = Executors.newSingleThreadScheduledExecutor();
@@ -62,11 +61,17 @@ public class CutPlayer4J implements ICutPlayer4J {
 
   private CutPlayer4J() {
     eventBus = new EventBus();
-    mediaPlayer = (mediaPlayerPanel = new EmbeddedMediaPanel()).mediaPlayer();
+    playerViewer = new MediaPlayerViewer();
     mediaPlayerActions = new MediaPlayerActions();
     tickService.scheduleWithFixedDelay(() -> eventBus.post(TickEvent.INSTANCE), 2, 500, TimeUnit.MILLISECONDS);
   }
 
+  public void closeApplication() {
+    eventBus.register(FILE_CHOOSER);
+    playerViewer.close();
+    Services.shutdownNow(tickService);
+  }
+  
   public void subscribe(Object subscriber) {
     eventBus.register(subscriber);
   }
@@ -79,12 +84,12 @@ public class CutPlayer4J implements ICutPlayer4J {
     invokeLater(() -> eventBus.post(event));
   }
 
-  public IMediaPlayerViewer mediaPlayerPanel() {
-    return mediaPlayerPanel;
+  public IMediaPlayerViewer playerViewer() {
+    return playerViewer;
   }
   
   public IMediaPlayer mediaPlayer() {
-    return mediaPlayer;
+    return playerViewer.mediaPlayer();
   }
 
   public MediaPlayerActions mediaPlayerActions() {

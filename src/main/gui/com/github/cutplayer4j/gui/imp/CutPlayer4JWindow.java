@@ -90,7 +90,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   public CutPlayer4JWindow() {
     super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
     
-    mediaPlayer = (mediaPlayerPanel = application().mediaPlayerPanel()).mediaPlayer();
+    mediaPlayer = (mediaPlayerPanel = application().playerViewer()).mediaPlayer();
     
     mediaOpenAction = new StandardAction(resource("menu.media.item.openFile")) {
       @Override
@@ -381,6 +381,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       prefs.put("recentMedia", recentMedia);
     }
     this.mediaPlayer.close();
+    application().closeApplication();
   }
   
 }

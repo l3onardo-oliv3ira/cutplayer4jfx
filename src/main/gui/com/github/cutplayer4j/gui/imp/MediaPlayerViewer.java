@@ -1,10 +1,10 @@
 package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.gui.imp.Images.CUTPLAYER_BLACK;
+import static com.github.cutplayer4j.gui.imp.SwingTools.invokeLater;
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.cutplayer4j.imp.CutPlayer4J.fileChooser;
 import static com.github.cutplayer4j.imp.CutPlayer4J.resources;
-import static com.github.utils4j.imp.SwingTools.invokeLater;
 
 import java.awt.CardLayout;
 import java.io.File;
@@ -23,36 +23,48 @@ import com.github.cutplayer4j.event.StoppedEvent;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.gui.IPlayerListener;
 
-public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerViewer {
+public final class MediaPlayerViewer implements IMediaPlayerViewer {
 
   private static final String IDLE = "idle";
 
   private static final String ACTIVE = "active";
 
+  private final JPanel panel = new JPanel();
+  
   private final CardLayout cardLayout;
 
   private JFXMediaPlayer player = new JFXMediaPlayer(new PlayerListener());
 
-  public EmbeddedMediaPanel() {
+  public MediaPlayerViewer() {
     cardLayout = new CardLayout();
-    setLayout(cardLayout);
-    add(new ImagePane(ImagePane.Mode.CENTER, CUTPLAYER_BLACK.asBuffer().orElse(null), 0.3f), IDLE);
-    add(player, ACTIVE);
+    panel.setLayout(cardLayout);
+    panel.add(new ImagePane(ImagePane.Mode.CENTER, CUTPLAYER_BLACK.asBuffer().orElse(null), 0.3f), IDLE);
+    panel.add(player, ACTIVE);
+  }
+  
+  @Override
+  public JPanel asPanel() {
+    return panel;
   }
 
   @Override
   public void showIdle() {
-    cardLayout.show(this, IDLE);
+    cardLayout.show(panel, IDLE);
   }
   
   @Override
   public void showVideo() {
-    cardLayout.show(this, ACTIVE);
+    cardLayout.show(panel, ACTIVE);
   }
 
   @Override
   public IMediaPlayer mediaPlayer() {
     return player;
+  }
+  
+  @Override
+  public void close() {
+    player.close();
   }
   
   private class PlayerListener implements IPlayerListener {
@@ -94,7 +106,7 @@ public final class EmbeddedMediaPanel extends JPanel implements IMediaPlayerView
         application().post(StoppedEvent.INSTANCE);
         File selectedFile = fileChooser().getSelectedFile();
         JOptionPane.showMessageDialog(
-          EmbeddedMediaPanel.this, 
+          panel, 
           MessageFormat.format(
             resources().getString("error.errorEncountered"), selectedFile != null ? selectedFile.getAbsolutePath() : ""), 
             resources().getString("dialog.errorEncountered"), 
