@@ -37,7 +37,6 @@ import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.github.utils4j.gui.imp.MediaTransferHandler;
 import com.github.utils4j.gui.imp.StandardAction;
-import com.github.utils4j.imp.Containers;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -382,5 +381,4 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     }
     application().closeApplication();
   }
-  
 }

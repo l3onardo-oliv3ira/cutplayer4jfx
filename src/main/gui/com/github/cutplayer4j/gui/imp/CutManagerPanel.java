@@ -129,9 +129,8 @@ public class CutManagerPanel extends JPanel implements ICutManager {
   
   @Subscribe
   protected void onCutEnd(CutEndEvent event) {
-    long time = event.getTime();
     if (selectedPanel != null) {
-      selectedPanel.setEnd(time);
+      selectedPanel.setEnd(event.getTime());
     }
   }
   

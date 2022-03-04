@@ -67,7 +67,6 @@ public class CutPlayer4J implements ICutPlayer4J {
   }
 
   public void closeApplication() {
-    eventBus.register(FILE_CHOOSER);
     playerViewer.close();
     Services.shutdownNow(tickService);
   }
