@@ -9,6 +9,10 @@ import com.github.utils4j.imp.Environment;
 public class CutPlayer4JApp {
 
   static final String ENVIRONMENT_VARIABLE_NAME = "CUTPLAYER4J_LOOKSANDFEELS";
+
+  static {
+    LookAndFeelsInstaller.install(Environment.valueFrom(ENVIRONMENT_VARIABLE_NAME).orElse("undefined"));
+  }
   
   public static void main(String[] args) {
     invokeLater(() ->  new CutPlayer4JApp().start());
@@ -17,7 +21,5 @@ public class CutPlayer4JApp {
   private void start() {
     CutPlayer4JWindow window = new CutPlayer4JWindow();
     window.display();
-    String looksAndFeelsName = Environment.valueFrom(ENVIRONMENT_VARIABLE_NAME).orElse("undefined");
-    LookAndFeelsInstaller.install(looksAndFeelsName, window);
   }
 }
