@@ -23,8 +23,7 @@
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/utils4j"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/videohandler4j"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.8.0_281/jre/lib/ext/jfxrt.jar" sourcepath="C:/Program Files/Java/jdk1.8.0_281/javafx-src.zip"/>
-	<classpathentry kind="var" path="PATH_TO_FX"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/filehandler4j"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAVAFX"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
