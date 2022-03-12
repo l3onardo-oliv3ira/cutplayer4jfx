@@ -2,6 +2,9 @@ package com.github.cutplayer4j.imp;
 
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
 
+import java.io.File;
+
+import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.imp.CutPlayer4JWindow;
 import com.github.utils4j.gui.imp.LookAndFeelsInstaller;
 import com.github.utils4j.imp.Environment;
@@ -19,7 +22,8 @@ public class CutPlayer4JApp {
   }
   
   private void start() {
-    CutPlayer4JWindow window = new CutPlayer4JWindow();
+    ICutPlayer4JWindow window = new CutPlayer4JWindow();
     window.display();
+    window.open(new File("insert your mp4 file here"));
   }
 }

@@ -37,6 +37,7 @@ import com.github.cutplayer4j.gui.IMediaPlayerViewer;
 import com.github.cutplayer4j.view.action.mediaplayer.MediaPlayerActions;
 import com.github.utils4j.gui.imp.MediaTransferHandler;
 import com.github.utils4j.gui.imp.StandardAction;
+import com.github.utils4j.imp.Args;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -98,9 +99,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
         JFileChooser fileChooser = fileChooser();
         if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(CutPlayer4JWindow.this)) {
           File file = fileChooser.getSelectedFile();
-          if (playerViewer.mediaPlayer().play(file.toURI().toString())) {
-            application().addRecentMedia(file.getAbsolutePath());
-          }
+          open(file);
         }
       }
     };
@@ -308,6 +307,14 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
         videoFullscreenAction.select(false);
       }
     });
+  }
+  
+  @Override
+  public void open(File file) {
+    Args.requireNonNull(file, "file is null");
+    if (playerViewer.mediaPlayer().play(file.toURI().toString())) {
+      application().addRecentMedia(file.getAbsolutePath());
+    }
   }
   
   @Subscribe
