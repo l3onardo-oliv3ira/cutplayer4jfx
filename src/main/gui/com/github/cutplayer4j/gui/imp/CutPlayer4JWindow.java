@@ -19,7 +19,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -269,10 +268,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     JPanel leftPane = new JPanel();
     leftPane.setLayout(new BorderLayout());
     
-    JPanel cutTools = new JPanel();
-    JButton b = new JButton("SALVAR TODOS OS CORTES");
-    cutTools.add(b);
-    //leftPane.add(cutTools, BorderLayout.SOUTH);
+    leftPane.add(new SaveAllSlicesPanel(), BorderLayout.NORTH);
     
     JPanel barFix = new JPanel();
     barFix.setLayout(new BorderLayout());
@@ -294,6 +290,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     leftPane.add(scrollPane, BorderLayout.CENTER);
+    
     contentPane.add(bottomPane, BorderLayout.SOUTH);
 
     setContentPane(contentPane);

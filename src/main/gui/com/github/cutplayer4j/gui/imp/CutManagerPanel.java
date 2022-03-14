@@ -13,11 +13,13 @@ import com.github.cutplayer4j.IMediaPlayer;
 import com.github.cutplayer4j.event.CutEndEvent;
 import com.github.cutplayer4j.event.CutStartEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
+import com.github.cutplayer4j.event.SaveAllEvent;
 import com.github.cutplayer4j.event.SelectVideoSliceEvent;
 import com.github.cutplayer4j.gui.ICutManager;
 import com.github.utils4j.gui.imp.DefaultFileChooser;
 import com.github.utils4j.imp.function.Functions;
 import com.github.videohandler4j.IVideoSliceView;
+import com.github.videohandler4j.gui.imp.VideoSlicePanel;
 import com.github.videohandler4j.imp.VideoSliceView;
 import com.google.common.eventbus.Subscribe;
 
@@ -139,14 +141,36 @@ public class CutManagerPanel extends JPanel implements ICutManager {
     currentMedia = e.getFile();
   }
   
-  protected void onSaved(IVideoSliceView panel) {
+  @Subscribe
+  public void onSaveAll(SaveAllEvent e) {
     if (currentMedia != null) {
-      JFileChooser chooser = new DefaultFileChooser();
-      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      chooser.setDialogTitle("Selecione onde será gravado o vídeo");
-      if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(null)) {
-        panel.splitAndSave(currentMedia, chooser.getSelectedFile());
+      File folder = selectFolder();
+      if (folder != null) {
+        int total = getComponentCount();
+        for(int i = 0; i < total; i++) {
+          VideoSlicePanel panel = (VideoSlicePanel)getComponent(i);
+          panel.splitAndSave(currentMedia, folder);
+        }
       }
     }
+  }
+  
+  protected void onSaved(IVideoSliceView panel) {
+    if (currentMedia != null) {
+      File folder = selectFolder();
+      if (folder != null) {
+        panel.splitAndSave(currentMedia, folder);
+      }
+    }
+  }
+  
+  private static File selectFolder() {
+    JFileChooser chooser = new DefaultFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    chooser.setDialogTitle("Selecione onde será gravado o vídeo");
+    if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(null)) {
+      return chooser.getSelectedFile();
+    }
+    return null;
   }
 }

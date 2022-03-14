@@ -63,7 +63,7 @@ public class CutPlayer4J implements ICutPlayer4J {
     eventBus = new EventBus();
     playerViewer = new MediaPlayerViewer();
     mediaPlayerActions = new MediaPlayerActions();
-    tickService.scheduleWithFixedDelay(() -> eventBus.post(TickEvent.INSTANCE), 2, 500, TimeUnit.MILLISECONDS);
+    tickService.scheduleWithFixedDelay(() -> eventBus.post(TickEvent.INSTANCE), 3, 500, TimeUnit.MILLISECONDS);
   }
 
   public void closeApplication() {

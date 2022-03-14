@@ -82,6 +82,7 @@ final class ControlsPane extends EventAwarePanel {
     
     cutStartButton = new StandardButton();
     cutStartButton.setAction(mediaPlayerActions.cutStartAction());
+    cutStartButton.setEnabled(false);
     
     cutEndButton = new StandardButton();
     cutEndButton.setAction(mediaPlayerActions.cutEndAction());
@@ -140,6 +141,7 @@ final class ControlsPane extends EventAwarePanel {
 
   @Subscribe
   public void onPlaying(PlayingEvent event) {
+    cutStartButton.setEnabled(true);
     playPauseButton.setIcon(pauseIcon);
   }
 
@@ -150,6 +152,7 @@ final class ControlsPane extends EventAwarePanel {
 
   @Subscribe
   public void onStopped(StoppedEvent event) {
+    cutStartButton.setEnabled(false);
     playPauseButton.setIcon(playIcon); 
   }
   
