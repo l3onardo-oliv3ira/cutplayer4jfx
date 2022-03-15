@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github</groupId>
-  <artifactId>cutplayerlight4j</artifactId>
+  <artifactId>cutplayer4jfx</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>cutplayerlight4j</name>
