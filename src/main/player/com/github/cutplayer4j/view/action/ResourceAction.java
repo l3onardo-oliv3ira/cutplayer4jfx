@@ -70,7 +70,7 @@ public final class ResourceAction implements IResourceAction {
   }
 
   private Icon toIcon(String key, String type) {
-    URL url = getClass().getResource("/icons/" + type + "/" + resources().getString(key) + ".png");
+    URL url = getClass().getResource("/cp4j/icons/" + type + "/" + resources().getString(key) + ".png");
     if (url == null)
       return null;
     return new ImageIcon(url);
