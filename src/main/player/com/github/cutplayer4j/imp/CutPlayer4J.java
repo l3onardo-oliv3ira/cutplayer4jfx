@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -108,6 +109,10 @@ public class CutPlayer4J implements ICutPlayer4J {
 
   public List<String> recentMedia() {
     return new ArrayList<>(recentMedia);
+  }
+  
+  public Optional<String> firstRecent() {
+    return Optional.ofNullable(recentMedia.peekFirst());
   }
 
   public void clearRecentMedia() {

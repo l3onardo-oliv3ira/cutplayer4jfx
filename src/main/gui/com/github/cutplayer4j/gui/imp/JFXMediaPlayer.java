@@ -146,16 +146,16 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
       player = null;
       playerListener.error();
       return false;
-    }
+    }   
     MediaView mediaView = new MediaView(player);
-    mediaView.fitHeightProperty().bind(selectDouble(mediaView.sceneProperty(), "height"));
-    mediaView.fitWidthProperty().bind(selectDouble(mediaView.sceneProperty(), "width"));
-    mediaView.setPreserveRatio(true);
     StackPane root = new StackPane();
     root.getChildren().add(mediaView);
     final Scene scene = new Scene(root);
     scene.setFill(Color.BLACK);
     setScene(scene);
+    mediaView.fitHeightProperty().bind(selectDouble(mediaView.sceneProperty(), "height"));
+    mediaView.fitWidthProperty().bind(selectDouble(mediaView.sceneProperty(), "width"));
+    mediaView.setPreserveRatio(true);
     bindListeners();
     play();
     return true;
