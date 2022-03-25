@@ -331,12 +331,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   
   private void applyPreferences() {
     Preferences prefs = Preferences.userNodeForPackage(CutPlayer4JWindow.class);
-    setBounds(
-      prefs.getInt("frameX", 100),
-      prefs.getInt("frameY", 100),
-      prefs.getInt("frameWidth" , 800),
-      prefs.getInt("frameHeight", 600)
-    );
+    setBounds(100, 100, 800, 600);
     boolean alwaysOnTop = prefs.getBoolean("alwaysOnTop", false);
     setAlwaysOnTop(alwaysOnTop);
     videoAlwaysOnTopAction.select(alwaysOnTop);
@@ -359,10 +354,10 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   protected void onShutdown() {
     if (wasShown()) {
       Preferences prefs = Preferences.userNodeForPackage(CutPlayer4JWindow.class);
-      prefs.putInt("frameX", getX());
-      prefs.putInt("frameY", getY());
-      prefs.putInt("frameWidth", getWidth());
-      prefs.putInt("frameHeight", getHeight());
+//      prefs.putInt("frameX", getX());
+//      prefs.putInt("frameY", getY());
+//      prefs.putInt("frameWidth", getWidth());
+//      prefs.putInt("frameHeight", getHeight());
       prefs.putBoolean("alwaysOnTop", isAlwaysOnTop());
       prefs.putBoolean("statusBar", statusBar.isVisible());
       prefs.put("chooserDirectory", fileChooser().getCurrentDirectory().toString());
