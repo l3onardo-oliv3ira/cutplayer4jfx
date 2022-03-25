@@ -86,9 +86,16 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   private final CutManagerPanel cutManagerPane;
   
   private final IMediaPlayerViewer playerViewer;
-  
+
+  private final boolean loadRecents;
+
   public CutPlayer4JWindow() {
+    this(true);
+  }
+
+  public CutPlayer4JWindow(boolean loadRecents) {    
     super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
+    this.loadRecents = loadRecents;
     
     playerViewer = application().playerViewer();
     
@@ -339,12 +346,14 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
     statusBar.setVisible(statusBarVisible);
     viewStatusBarAction.select(statusBarVisible);
     fileChooser().setCurrentDirectory(new File(prefs.get("chooserDirectory", ".")));
-    String recentMedia = prefs.get("recentMedia", "");
-    if (recentMedia.length() > 0) {
-      List<String> mrls = Arrays.asList(prefs.get("recentMedia", "").split("\\|"));
-      Collections.reverse(mrls);
-      for (String mrl : mrls) {
-        application().addRecentMedia(mrl);
+    if (loadRecents) {
+      String recentMedia = prefs.get("recentMedia", "");
+      if (recentMedia.length() > 0) {
+        List<String> mrls = Arrays.asList(prefs.get("recentMedia", "").split("\\|"));
+        Collections.reverse(mrls);
+        for (String mrl : mrls) {
+          application().addRecentMedia(mrl);
+        }
       }
     }
   }
@@ -354,10 +363,6 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   protected void onShutdown() {
     if (wasShown()) {
       Preferences prefs = Preferences.userNodeForPackage(CutPlayer4JWindow.class);
-//      prefs.putInt("frameX", getX());
-//      prefs.putInt("frameY", getY());
-//      prefs.putInt("frameWidth", getWidth());
-//      prefs.putInt("frameHeight", getHeight());
       prefs.putBoolean("alwaysOnTop", isAlwaysOnTop());
       prefs.putBoolean("statusBar", statusBar.isVisible());
       prefs.put("chooserDirectory", fileChooser().getCurrentDirectory().toString());
