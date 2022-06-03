@@ -61,6 +61,7 @@ public class CutPlayer4JApp {
     window.display();    
     if (video.isPresent()) {    
       window.open(new File(video.get()));
+      window.pause();
     }
   }
 }

@@ -343,9 +343,14 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   @Override
   public void open(File file) {
     Args.requireNonNull(file, "file is null");
-    if (playerViewer.mediaPlayer().play(file.toURI().toString())) {
+    if (playerViewer.mediaPlayer().play(file.toURI().toString())) {      
       application().addRecentMedia(file.getAbsolutePath());
     }
+  }
+  
+  @Override
+  public void pause() {
+    playerViewer.mediaPlayer().pause();    
   }
   
   @Subscribe
