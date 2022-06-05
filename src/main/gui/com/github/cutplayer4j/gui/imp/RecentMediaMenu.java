@@ -40,6 +40,7 @@ import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import com.github.cutplayer4j.event.OpenRecentEvent;
 import com.github.utils4j.gui.IResourceAction;
 import com.github.utils4j.gui.imp.StandardAction;
 
@@ -64,7 +65,7 @@ final class RecentMediaMenu extends OnDemandMenu {
 
   private class PlayRecentAction extends AbstractAction {
 
-    private final String mrl;
+    private final File file;
 
     public PlayRecentAction(int number, String mrl) {
       super(String.format("%d: %s", number, mrl));
@@ -73,12 +74,12 @@ final class RecentMediaMenu extends OnDemandMenu {
       putValue(Action.LARGE_ICON_KEY, resource.buttonIcon());
       putValue(Action.MNEMONIC_KEY, number < 10 ? number : 0);
       putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(String.format("control %d", number < 10 ? number : 0)));
-      this.mrl = new File(mrl).toURI().toString();
+      this.file = new File(mrl);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      application().mediaPlayer().play(mrl);
+      application().post(new OpenRecentEvent(file));
     }
   }
 

@@ -57,6 +57,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
+import com.github.cutplayer4j.event.OpenRecentEvent;
 import com.github.cutplayer4j.event.SnapshotImageEvent;
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.IMediaPlayerViewer;
@@ -288,6 +289,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
       @Override
       protected void onMediaDropped(String[] uris) {
         if (!isEmpty(uris)) {
+          cutManagerPane.close();
           playerViewer.mediaPlayer().play(new File(trim(uris[0])).toURI().toString());
         }
       }
@@ -344,8 +346,13 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   public void open(File file) {
     Args.requireNonNull(file, "file is null");
     if (playerViewer.mediaPlayer().play(file.toURI().toString())) {      
+      closeCuts();
       application().addRecentMedia(file.getAbsolutePath());
     }
+  }
+  
+  public void closeCuts() {
+    cutManagerPane.close();
   }
   
   @Override
@@ -356,6 +363,11 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   @Subscribe
   public void onSnapshotImage(SnapshotImageEvent event) {
     new SnapshotFrame(event.image());
+  }
+  
+  @Subscribe
+  public void openRecent(OpenRecentEvent e) {
+    open(e.getFile());
   }
   
   private ActionMap getActionMap() {

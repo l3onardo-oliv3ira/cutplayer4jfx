@@ -124,6 +124,12 @@ public class CutManagerPanel extends JPanel implements ICutManager {
     }
   }
   
+  public void close() {
+    removeAll();
+    updateUI();
+    onEmpty.run();
+  }
+  
   protected void onSelected(IVideoSliceView panel) {
     IVideoSliceView previous = selectedPanel;
     onDoSelect(panel);
