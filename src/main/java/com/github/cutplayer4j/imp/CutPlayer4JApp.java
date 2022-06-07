@@ -38,6 +38,7 @@ import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.imp.CutPlayer4JWindow;
 import com.github.utils4j.gui.imp.LookAndFeelsInstaller;
 import com.github.utils4j.imp.Environment;
+import com.github.utils4j.imp.Threads;
 
 public class CutPlayer4JApp {
 
@@ -61,7 +62,7 @@ public class CutPlayer4JApp {
     window.display();    
     if (video.isPresent()) {    
       window.open(new File(video.get()));
-      window.pause();
+      Threads.startAsync(window::pause, 500);
     }
   }
 }
