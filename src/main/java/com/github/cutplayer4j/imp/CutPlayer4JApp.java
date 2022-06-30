@@ -62,7 +62,7 @@ public class CutPlayer4JApp {
     window.display();    
     if (video.isPresent()) {    
       window.open(new File(video.get()));
-      Threads.startAsync(window::pause, 500);
+      Threads.startAsync(() -> invokeLater(window::pause), 500);
     }
   }
 }
