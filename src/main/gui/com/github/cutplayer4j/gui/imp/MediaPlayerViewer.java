@@ -65,7 +65,7 @@ public final class MediaPlayerViewer implements IMediaPlayerViewer {
   public MediaPlayerViewer() {
     cardLayout = new CardLayout();
     panel.setLayout(cardLayout);
-    panel.add(new ImagePane(ImagePane.Mode.CENTER, CUTPLAYER_BLACK.asBuffer().orElse(null), 0.3f), IDLE);
+    panel.add(new ImagePane(ImagePane.Mode.CENTER, CUTPLAYER_BLACK.asBuffer(), 0.3f), IDLE);
     panel.add(player, ACTIVE);
   }
   

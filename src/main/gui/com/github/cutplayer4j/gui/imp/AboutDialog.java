@@ -54,7 +54,7 @@ final class AboutDialog extends JEscDialog {
     getContentPane().setBackground(Color.white);
 
     JLabel logoLabel = new JLabel();
-    logoLabel.setIcon(Images.CUTPLAYER.asIcon().orElse(null));
+    logoLabel.setIcon(Images.CUTPLAYER.asIcon());
 
     JLabel applicationLabel = new JLabel();
     applicationLabel.setFont(applicationLabel.getFont().deriveFont(30.0f));

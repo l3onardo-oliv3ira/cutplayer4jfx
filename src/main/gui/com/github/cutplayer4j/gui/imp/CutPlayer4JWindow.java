@@ -122,7 +122,7 @@ public class CutPlayer4JWindow extends ShutdownAwareFrame implements ICutPlayer4
   }
 
   public CutPlayer4JWindow(boolean loadRecents) {    
-    super("CutPlayer4J", Images.CUTPLAYER.asImage().orElse(null));
+    super("CutPlayer4J", Images.CUTPLAYER.asImage());
     this.loadRecents = loadRecents;
     
     playerViewer = application().playerViewer();
