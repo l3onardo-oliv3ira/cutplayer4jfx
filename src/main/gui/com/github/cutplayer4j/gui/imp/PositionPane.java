@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 import com.github.cutplayer4j.event.FinishedEvent;
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
-import com.github.videohandler4j.imp.TimeTools;
+import com.github.utils4j.imp.DurationTools;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -97,7 +97,7 @@ final class PositionPane extends EventAwarePanel {
   }
 
   private void refresh() {
-    timeLabel.setText(TimeTools.toString(time));
+    timeLabel.setText(DurationTools.toString(time));
 
     if (!sliderChanging.get()) {
       int value = (int) (application().mediaPlayer().position());
@@ -112,7 +112,7 @@ final class PositionPane extends EventAwarePanel {
   }
   
   void setDuration(long duration) {
-    durationLabel.setText(TimeTools.toString(duration));
+    durationLabel.setText(DurationTools.toString(duration));
     positionSlider.setMaximum((int)duration);
   }
   

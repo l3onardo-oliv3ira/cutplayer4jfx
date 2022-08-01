@@ -40,7 +40,7 @@ import javax.swing.JLabel;
 
 import com.github.cutplayer4j.event.PlayingEvent;
 import com.github.cutplayer4j.event.TickEvent;
-import com.github.videohandler4j.imp.TimeTools;
+import com.github.utils4j.imp.DurationTools;
 import com.google.common.eventbus.Subscribe;
 
 import net.miginfocom.swing.MigLayout;
@@ -108,7 +108,7 @@ final class StatusBar extends EventAwarePanel {
   }
 
   void refresh() {
-    timeLabel.setText(String.format("%s/%s", TimeTools.toString(time), TimeTools.toString(duration)));
+    timeLabel.setText(String.format("%s/%s", DurationTools.toString(time), DurationTools.toString(duration)));
   }
 
   @Subscribe
