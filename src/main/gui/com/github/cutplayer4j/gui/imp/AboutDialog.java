@@ -71,7 +71,7 @@ final class AboutDialog extends JEscDialog {
     githubLabel.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        Throwables.tryRun(() -> {
+        Throwables.runQuietly(() -> {
           Desktop.getDesktop().browse(new URI(uri));
         });
       }

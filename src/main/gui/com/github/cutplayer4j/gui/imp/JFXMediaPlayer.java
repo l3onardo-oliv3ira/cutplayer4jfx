@@ -27,8 +27,8 @@
 
 package com.github.cutplayer4j.gui.imp;
 
+import static com.github.utils4j.imp.Throwables.runQuietly;
 import static com.github.utils4j.imp.Throwables.tryCall;
-import static com.github.utils4j.imp.Throwables.tryRun;
 import static javafx.beans.binding.Bindings.selectDouble;
 
 import java.awt.image.BufferedImage;
@@ -222,8 +222,8 @@ public class JFXMediaPlayer extends JFXPanel implements IMediaPlayer {
   @Override
   public void close() {
     if (isAlive()) {
-      tryRun(player::stop);
-      tryRun(player::dispose);
+      runQuietly(player::stop);
+      runQuietly(player::dispose);
       player = null;
     }
   }

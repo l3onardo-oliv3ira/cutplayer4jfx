@@ -29,7 +29,7 @@ package com.github.cutplayer4j.gui.imp;
 
 import static com.github.cutplayer4j.imp.CutPlayer4J.application;
 import static com.github.utils4j.imp.Strings.trim;
-import static com.github.utils4j.imp.Throwables.tryRun;
+import static com.github.utils4j.imp.Throwables.runQuietly;
 
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
@@ -61,7 +61,7 @@ final class StatusBar extends EventAwarePanel {
     titleLabel = new BorderedStandardLabel();
     titleLabel.addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
-        tryRun(() -> {
+        runQuietly(() -> {
           File f = new File(trim(titleLabel.getText()));
           if (f.exists()) {
             Desktop.getDesktop().open(f.getParentFile());
