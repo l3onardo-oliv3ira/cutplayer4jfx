@@ -27,7 +27,11 @@
 
 package com.github.cutplayer4j.imp;
 
+import static com.github.utils4j.gui.imp.LookAndFeelsInstaller.UNDEFINED;
+import static com.github.utils4j.gui.imp.LookAndFeelsInstaller.install;
 import static com.github.utils4j.gui.imp.SwingTools.invokeLater;
+import static com.github.utils4j.imp.Environment.valueFrom;
+import static com.github.utils4j.imp.Throwables.runQuietly;
 
 import java.io.File;
 import java.util.Comparator;
@@ -36,8 +40,6 @@ import java.util.stream.Stream;
 
 import com.github.cutplayer4j.gui.ICutPlayer4JWindow;
 import com.github.cutplayer4j.gui.imp.CutPlayer4JWindow;
-import com.github.utils4j.gui.imp.LookAndFeelsInstaller;
-import com.github.utils4j.imp.Environment;
 import com.github.utils4j.imp.Threads;
 
 public class CutPlayer4JApp {
@@ -47,7 +49,7 @@ public class CutPlayer4JApp {
   private static final CutPlayer4J APP; 
   
   static {
-    LookAndFeelsInstaller.install(Environment.valueFrom(ENVIRONMENT_VARIABLE_NAME).orElse("undefined"));
+    runQuietly(() -> install(valueFrom(ENVIRONMENT_VARIABLE_NAME).orElse(UNDEFINED)));
     APP = CutPlayer4J.application();
   }
   
